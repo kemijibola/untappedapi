@@ -45,14 +45,13 @@ module.exports = function(db){
         /*  extra data to be sent back to user is an object = { scopes: [], user_type: ''}
         **   and any extra information the system might need
         */
-        
         signOptions.subject = this._id.toString();
         return await jwt.sign(payload, privateKey, signOptions);
     }
     modelDef.schema.methods.comparePassword = function comparePassword(candidatePassword, cb){
-            bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-            cb(err, isMatch);
-          });
+        bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+        cb(err, isMatch);
+        });
     }
 
     return mongoose.model(modelDef.name, modelDef.schema)

@@ -1,5 +1,4 @@
 const halson = require('halson');
-const config = require('config');
 
 module.exports = {
     makeHAL: makeHAL,
@@ -17,7 +16,7 @@ function setupRoutes(server, swagger, lib){
 function validateKey(hmacdata, key, lib){
     if(+key === 777) return true;
     let hmac = require('crypto')
-                .createHmac('md5', config.get('secretKey'))
+                .createHmac('md5', '')
                 .update(hmacdata)
                 .digest('hex');
     return hmac;

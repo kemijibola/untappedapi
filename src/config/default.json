@@ -1,0 +1,10 @@
+{
+    "env": "development",
+    "rsaKeys": {
+        "42": {
+            "kid": "42",
+            "type": "RSA256",
+            "publicKey": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbN70vkrouYjrxyK6PpIFCY0U/EYO8J\nebTY1fzcLE8Ks9Bh6kZhg49YoqqSqmgCqm0e8oGwRo/ZZq/HLeEZgCMCAwEAAQ==\n-----END PUBLIC KEY-----"
+        }
+    }
+}

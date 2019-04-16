@@ -106,7 +106,6 @@ class Users extends BaseController {
     }
 
     async getCurrentApiKey(){
-
         // production implementation store private key in (AWS)
 
         let params = {

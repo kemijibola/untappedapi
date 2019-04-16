@@ -1,9 +1,8 @@
 module.exports = {
-    Applications: require('./applications'),
     Users: require('./users'),
     UserTypes: require('./user-types'),
-    Roles: require('./roles'),
-    Keys: require('./keys')
+    Applications: require('./applications'),
+    ApplicationPermissions: require('./app-permissions'),
+    Permissions: require('./permissions'),
+    RolePermission: require('./role-permissions')
 }
-
-var controllers = require('./');

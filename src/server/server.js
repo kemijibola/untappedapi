@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 require('../services/cache');
 
 module.exports = (options) => {
-    if(!options){
+    if(!options.app){
         throw (new ErrorHandler('The app has not been started.'));
     }
     if (!options.port) {
@@ -27,8 +27,8 @@ module.exports = (options) => {
 
     lib.helpers.setupRoutes(app, swagger, lib);
 
-    return app.listen(port.port, () => {
-        lib.logger.info(`Server started successfully on ${port.port}`);
+    return app.listen(port, () => {
+        lib.logger.info(`Server started successfully on ${port}`);
         lib.db.connect(err => {
             if(err) lib.logger.error(`Error trying to connect to database: ${err}`);
             lib.logger.info('Database service successfully started');
