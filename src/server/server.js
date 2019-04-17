@@ -27,7 +27,8 @@ module.exports = (options) => {
 
     lib.helpers.setupRoutes(app, swagger, lib);
 
-    return app.listen(port, () => {
+
+    app.listen(port, () => {
         lib.logger.info(`Server started successfully on ${port}`);
         lib.db.connect(err => {
             if(err) lib.logger.error(`Error trying to connect to database: ${err}`);

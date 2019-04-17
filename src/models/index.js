@@ -4,6 +4,8 @@ module.exports = function(db){
         "UserType": require('./userType')(db),
         "User": require('./user')(db),
         "Role": require('./role')(db),
-        "Key": require('./key')(db)
+        "ResourcePermission": require('./resource-permission')(db),
+        "Resource": require('./resource')
+        // "Key": require('./key')(db)
     }
 }

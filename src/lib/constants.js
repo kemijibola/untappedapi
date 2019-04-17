@@ -30,4 +30,9 @@ const JWTOPTIONS = {
     CURRENTKEY: '42'
 }
 
-module.exports = Object.assign({}, { ERRORCODES, UNTAPPEDUSERTYPES, JWTOPTIONS })
+const UPLOADOPTIONS = {
+    SINGLE: 'SINGLE',
+    MULTIPLE: 'MULTIPLE'
+}
+
+module.exports = Object.assign({}, { ERRORCODES, UNTAPPEDUSERTYPES, JWTOPTIONS, UPLOADOPTIONS })

@@ -26,10 +26,3 @@ const server = require('./server/server');
         }
     });
 })()
-
-
-// server({
-//     app,
-//     port: process.env['development']
-// });
-

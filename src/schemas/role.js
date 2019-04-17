@@ -4,11 +4,11 @@ module.exports = {
         "name": {
             "type": "string",
             "unique": true,
-            "description": "Name of role."
+            "description": "Name of role"
         },
-        "user_type_id": {
+        "user_type": {
             "type": "object",
-            "description": "User the role is assigned to (UserType).",
+            "description": "Type of user",
             "$ref": "UserType"
         }
     }

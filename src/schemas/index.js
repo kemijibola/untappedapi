@@ -1,9 +1,13 @@
 module.exports = {
     models: {
-        "Application": require('./application'),
+        // "Application": require('./application'),
         "UserType": require('./userType'),
         "User": require('./user'),
         "Role": require('./role'),
-        "Key": require('./key')
+        "Permission": require('./permission'),
+        "ResourcePermission": require('./resource-permission'),
+        "RolePermission": require('./role-permission'),
+        "Resource": require('./resource'),
+        // "Key": require('./key')
     }
 }

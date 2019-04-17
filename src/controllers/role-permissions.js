@@ -27,7 +27,7 @@ class RolePermissions extends BaseController {
                         createdBy: 'test user',
                         message: 'Created role-permission'
                     }
-                    permission.log(data);
+                    rolePermission.log(data);
                 }
                 return this.writeHAL(res, rolePermission);
             }catch(err){

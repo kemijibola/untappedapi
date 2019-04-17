@@ -28,30 +28,64 @@ class BaseController {
         }
         this.actions.push(newAct);
     }
-    
-    Error(res, type, msg){
-        logger.error("Error of type " + type + " found: " + msg);
-        const error = new ErrorHandler(`Error of type ${type} found: ${msg}`);
-        if (ERRORCODES[type]){
-            return res.status(ERRORCODES[type]).json({
-                name: error.name,
-                type: type,
-                msg: error.message,
-                info: error.stack
-            });
-        } else {
-            
-            return res.json({
-                error: true,
-                name: error.name,
-                type: type,
-                msg: error.message,
-                info: error.stack
-            })
+
+    transformResponse(res, status, data, message){
+        if (!status){
+            const error = new ErrorHandler(`Error of type ${data} found: ${message}`);
+            if(ERRORCODES[data]){
+                return res.status(ERRORCODES[data]).json({
+                    status: status,
+                    error: {
+                        name: error.name,
+                        type: data,
+                        message: error.message,
+                        stack: error.stack
+                    },
+                    data: {}
+                })
+            }else {
+                return res.status(400).json({
+                    status: status,
+                    error: {
+                        name: error.name,
+                        type: data,
+                        message: error.message,
+                        stack: error.stack
+                    },
+                    data: {}
+                })
+            }
         }
+        return res.json({
+            status: status,
+            message: message,
+            data: data
+        })
     }
 
-    writeHAL(res, obj){
+    // Error(res, type, msg){
+    //     logger.error("Error of type " + type + " found: " + msg);
+    //     const error = new ErrorHandler(`Error of type ${type} found: ${msg}`);
+    //     if (ERRORCODES[type]){
+    //         return res.status(ERRORCODES[type]).json({
+    //             name: error.name,
+    //             type: type,
+    //             msg: error.message,
+    //             info: error.stack
+    //         });
+    //     } else {
+            
+    //         return res.json({
+    //             error: true,
+    //             name: error.name,
+    //             type: type,
+    //             msg: error.message,
+    //             info: error.stack
+    //         })
+    //     }
+    // }
+
+    writeHAL(obj){
         if(Array.isArray(obj)){
             let newArr = obj.map(item => {
                 if (typeof(item._id) === 'string'){
@@ -70,7 +104,7 @@ class BaseController {
         if (!obj){
              obj = {}
         }
-        return res.json(obj);
+        return obj;
     }
 }
 
