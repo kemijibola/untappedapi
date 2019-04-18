@@ -1,5 +1,5 @@
 module.exports = {
-    "id": "VideoCollection",
+    "id": "Collection",
     "properties": {
         "title": {
             "type": "string",
@@ -26,50 +26,6 @@ module.exports = {
             "description": "The collection owner",
             "$ref": "User"
         },
-        "comments": {
-            "type": "array",
-            "description": "List of comments",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "ObjectId"
-                    },
-                    "owner": {
-                        "type": "object",
-                        "$ref": "User"
-                    },
-                    "date": {
-                        "type": "date"
-                    },
-                    "message": {
-                        "type": "string"
-                    },
-                    "replies": {
-                        "type": "array",
-                        "description": "List of replies",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "_id": {
-                                    "type": "ObjectId"
-                                },
-                                "owner": {
-                                    "type": "object",
-                                    "$ref": "User"
-                                },
-                                "date": {
-                                    "type": "date"
-                                },
-                                "message": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "items": {
             "type": "array",
             "description": "List of items",
@@ -87,7 +43,7 @@ module.exports = {
                         "items": {
                             "type": "object",
                             "properties": {
-                                "liked_by": {
+                                "user": {
                                     "type": "object",
                                     "$ref": "User"
                                 }

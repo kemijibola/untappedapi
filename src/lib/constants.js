@@ -6,6 +6,7 @@ const ERRORCODES = {
     InvalidArgument: 409,
     ResourceNotFoundError: 404,
     InvalidContent: 400,
+    BadRequest: 400,
     InvalidCredentials: 401,
     InvalidHeader: 400,
     InvalidVersion: 400,
@@ -35,4 +36,9 @@ const UPLOADOPTIONS = {
     MULTIPLE: 'MULTIPLE'
 }
 
-module.exports = Object.assign({}, { ERRORCODES, UNTAPPEDUSERTYPES, JWTOPTIONS, UPLOADOPTIONS })
+const UPLOADOPERATIONS = {
+    VIDEO: 'VIDEOS',
+    IMAGE: 'IMAGES',
+    AUDIO: 'AUDIOS'
+}
+module.exports = Object.assign({}, { ERRORCODES, UNTAPPEDUSERTYPES, JWTOPTIONS, UPLOADOPTIONS, UPLOADOPERATIONS })
