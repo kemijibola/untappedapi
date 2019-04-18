@@ -61,12 +61,6 @@ class Collections extends BaseController {
                 const collectionExist = await this.lib.db.model('Collection').findOne(criteria);
                 if(collectionExist) return next(this.Error(res, 'DuplicateRecord', `${media_type} Album with title ${collection.name} exists.`))
 
-                // saving medias to aws s3
-                // rules ::
-                // 1. Only signedin user can upload any media type 
-                // 2. Tie uploaded media to the collection that's being created
-                // 3. check extension for sent media type... e.g Image{'.png, .jpg, .gif'}, Videos { '.mp4, .mov, '.'}
-
                 let newCollection = this.lib.db.model('Collection')(body);
                 const collection = await newCollection.save();
                 const halObj = this.writeHAL(response);

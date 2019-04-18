@@ -15,7 +15,12 @@ class Uploads extends BaseController {
         this.lib = lib;
     }
 
-    // req must include options type e.g VIDEO,AUDIO,USERPROFILE,IMAGE
+    // saving medias to aws s3
+    // rules ::
+    // 1. Only signedin user can upload any media type 
+    // 2. Tie uploaded media to the collection that's being created
+    // 3. check extension for sent media type... e.g Image{'.png, .jpg, .gif'}, Videos { '.mp4, .mov, '.'}
+    // 4. req must include options type e.g VIDEO,AUDIO,USERPROFILE,IMAGE
     async index(req, res, next) {
         const { operation_type, file_extension } = req.body;
         
