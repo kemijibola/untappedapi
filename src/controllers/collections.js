@@ -1,6 +1,4 @@
 const BaseController = require('./baseController');
-const { UPLOADOPTIONS } = require('../lib/constants');
-
 class Collections extends BaseController {
     constructor(lib){
         super();
@@ -47,6 +45,7 @@ class Collections extends BaseController {
     async details(){
         // find one collection by id
     }
+
     async create(req, res, next){
         const body = req.body;
         let criteria;
@@ -74,10 +73,6 @@ class Collections extends BaseController {
         }
     }
 
-    // app requests presigned url for client
-    async getSignedUrl(){
-        
-    }
     async update(req, res, next){
         const body = req.body;
         const id = req.params.id.trim();

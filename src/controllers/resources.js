@@ -1,10 +1,4 @@
 const BaseController = require('./baseController');
-const { UNTAPPEDUSERTYPES } = require('../lib/constants');
-const ApiResponse = require('../models/response');
-const { authorizationService, emailService } = require('../services/index');
-const { sendMail } = require('../lib/helpers');
-const mongoose = require('mongoose');
-
 class Resources extends BaseController {
     constructor(lib){
         super();
@@ -21,7 +15,7 @@ class Resources extends BaseController {
         if(body){
             try{
                 const resourceExist = await this.lib.db.model('Resource').findOne({ name: body.name });
-                if(roleExist) return next(this.Error(res, 'DuplicateRecord', `Resource with name ${ resourceExist.name } exists.`))
+                if(roleExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Resource with name ${ resourceExist.name } exists.`))
                 let newResource = this.lib.db.model('Resource')(body);
                 const resource = await newResource.save();
                 if (resource && typeof resource.log === 'function'){
@@ -34,12 +28,13 @@ class Resources extends BaseController {
                     }
                     resource.log(data);
                 }
-                return this.writeHAL(res, resource);
+                const halObj = this.writeHAL(resource);
+                return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(this.Error(res, 'InternalServerError', err.message))
+                next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 }

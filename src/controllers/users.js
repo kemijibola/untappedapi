@@ -1,5 +1,5 @@
 const BaseController = require('./baseController');
-const { UNTAPPEDUSERTYPES, JWTOPTIONS} = require('../lib/constants');
+const { JWTOPTIONS} = require('../lib/constants');
 const ApiResponse = require('../models/response');
 const { authorizationService, emailService } = require('../services/index');
 const { sendMail } = require('../lib/helpers');

@@ -1,9 +1,4 @@
 const BaseController = require('./baseController');
-const { UNTAPPEDUSERTYPES } = require('../lib/constants');
-const ApiResponse = require('../models/response');
-const { authorizationService, emailService } = require('../services/index');
-const { sendMail } = require('../lib/helpers');
-
 class UserTypes extends BaseController {
     constructor(lib){
         super();
@@ -20,7 +15,7 @@ class UserTypes extends BaseController {
         if(body){
             try{
                 const userTypeExist = await this.lib.db.model('UserType').findOne({name: body.name});
-                if(userTypeExist) return next(this.Error(res, 'DuplicateRecord', `User type with name ${userTypeExist.name} exists.`))
+                if(userTypeExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `User type with name ${userTypeExist.name} exists.`))
                 let newUserType = this.lib.db.model('UserType')(body);
                 const userType = await newUserType.save();
                 if (userType && typeof userType.log === 'function'){
@@ -33,12 +28,13 @@ class UserTypes extends BaseController {
                     }
                     userType.log(data);
                 }
-                return this.writeHAL(res, userType);
+                const halObj = this.writeHAL(userType);
+                return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(this.Error(res, 'InternalServerError', err.message))
+                next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 }

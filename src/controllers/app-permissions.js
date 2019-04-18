@@ -16,7 +16,7 @@ class AppPermissions extends BaseController {
         if(body){
             try{
                 const appPermissionExist = await this.lib.db.model('AppPermission').findOne({name: body.name});
-                if(appPermissionExist) return next(this.Error(res, 'DuplicateRecord', `Role-Permission with name ${appPermissionExist.name} exists.`))
+                if(appPermissionExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role-Permission with name ${appPermissionExist.name} exists.`))
                 let newAppPermission = this.lib.db.model('AppPermission')(body);
                 const appPermission = await newAppPermission.save();
                 if (appPermission && typeof appPermission.log === 'function'){
@@ -29,12 +29,13 @@ class AppPermissions extends BaseController {
                     }
                     permission.log(data);
                 }
-                return this.writeHAL(res, appPermission);
+                const halObj = this.writeHAL(appPermission);
+                return this.transformResponse(res, true, halObj, 'Create operation was successful');
             }catch(err){
-                next(this.Error(res, 'InternalServerError', err.message))
+                next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 }

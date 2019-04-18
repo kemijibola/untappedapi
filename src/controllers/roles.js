@@ -1,9 +1,4 @@
 const BaseController = require('./baseController');
-const { UNTAPPEDUSERTYPES } = require('../lib/constants');
-const ApiResponse = require('../models/response');
-const { authorizationService, emailService } = require('../services/index');
-const { sendMail } = require('../lib/helpers');
-const mongoose = require('mongoose');
 
 class Roles extends BaseController {
     constructor(lib){
@@ -21,7 +16,7 @@ class Roles extends BaseController {
         if(body){
             try{
                 const roleExist = await this.lib.db.model('Role').findOne({ name: body.name });
-                if(roleExist) return next(this.Error(res, 'DuplicateRecord', `Role with name ${ roleExist.name } exists.`))
+                if(roleExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role with name ${ roleExist.name } exists.`))
                 const userType = await this.lib.db.model('UserType').findById({ _id: body.user_type_id })
                 if(!userType) return next(this.Error(res, 'EntityNotFound', `Could not determine user type of: ${ body.user_type_id }`))
                 let newRole = this.lib.db.model('Role')(body);
@@ -36,12 +31,13 @@ class Roles extends BaseController {
                 //     }
                 //     role.log(data);
                 // }
-                return this.writeHAL(res, role);
+                const halObj = this.writeHAL(role);
+                return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(this.Error(res, 'InternalServerError', err.message))
+                next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 }

@@ -8,6 +8,7 @@ module.exports = {
         "ResourcePermission": require('./resource-permission'),
         "RolePermission": require('./role-permission'),
         "Resource": require('./resource'),
-        // "Key": require('./key')
+        "Collection": require('./collection'),
+        "Profile": require('./profile')
     }
 }

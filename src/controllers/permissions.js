@@ -1,5 +1,4 @@
 const BaseController = require('./baseController');
-
 class Permissions extends BaseController {
     constructor(lib){
         super();
@@ -16,7 +15,7 @@ class Permissions extends BaseController {
         if(body){
             try{
                 const permissionExist = await this.lib.db.model('Permission').findOne({name: body.name});
-                if(permissionExist) return next(this.Error(res, 'DuplicateRecord', `Permission with name ${permissionExist.name} exists.`))
+                if(permissionExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Permission with name ${permissionExist.name} exists.`))
                 let newPermission = this.lib.db.model('Permission')(body);
                 const permission = await newPermission.save();
                 if (permission && typeof permission.log === 'function'){
@@ -29,12 +28,13 @@ class Permissions extends BaseController {
                     }
                     permission.log(data);
                 }
-                return this.writeHAL(res, permission);
+                const halObj = this.writeHAL(permission);
+                return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(this.Error(res, 'InternalServerError', err.message))
+                next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 }

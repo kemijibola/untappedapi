@@ -1,5 +1,4 @@
 const BaseController = require('./baseController');
-
 class Applications extends BaseController {
     constructor(lib){
         super();
@@ -16,7 +15,7 @@ class Applications extends BaseController {
         if(body){
             try{
                 const applicationExist = await this.lib.db.model('Application').findOne({name: body.name});
-                if(applicationExist) return next(this.Error(res, 'DuplicateRecord', `Application with name ${applicationExist.name} exists.`))
+                if(applicationExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Application with name ${applicationExist.name} exists.`))
                 let newApplication = this.lib.db.model('Application')(body);
                 const application = await newApplication.save();
                 if (application && typeof application.log === 'function'){
@@ -29,12 +28,13 @@ class Applications extends BaseController {
                     }
                     permission.log(data);
                 }
-                return this.writeHAL(res, permission);
+                const halObj = this.writeHAL(permission);
+                return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(this.Error(res, 'InternalServerError', err.message))
+                next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 }

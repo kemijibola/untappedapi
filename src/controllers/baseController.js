@@ -1,7 +1,6 @@
 const halson = require('halson');
 const ErrorHandler = require('../lib/errorHandler');
-const {ERRORCODES} = require('../lib/constants');
-const logger = require('../lib/logger');
+const { ERRORCODES } = require('../lib/constants');
 const mongoose = require('mongoose');
 const helpers = require('../lib/helpers');
 
