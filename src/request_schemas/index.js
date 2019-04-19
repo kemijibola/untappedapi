@@ -5,6 +5,8 @@ module.exports = {
     "roles": require('./roles'),
     "permissions": require('./permissions'),
     "resource-permissions": require('./resource-permissions'),
-    "resources": require('./resources')
+    "resources": require('./resources'),
+    "categories": require('./categories'),
+    "appointments": require('./appointments')
     // "keys": require('./keys')
 }

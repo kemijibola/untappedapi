@@ -10,6 +10,13 @@ module.exports = {
             "description": "User's full name",
             "$ref": "UserType"
         },
+        "phone_numbers": {
+            "type": "array",
+            "description": "User's phone numbers",
+            "items": {
+                "type": "string"
+            }
+        },
         "user": {
             "type": "object",
             "description": "User that owns the profile",
@@ -28,25 +35,26 @@ module.exports = {
         },
         "social_media": {
             "type": "array",
-            "description": "Social media associated with user",
+            "description": "User's social media account",
             "items": {
                 "type": "string"
             }
         },
-        "image_variations": {
+        "images": {
             "type": "array",
-            "description": "User's profile images in different variation",
+            "description": "Profile and Banner pictures and other type of user picture",
             "items": {
                 "type": "object",
                 "properties": {
-                    "img_size": {
+                    "key": {
                         "type": "string"
                     },
-                    "img_path": {
+                    "value": {
                         "type": "string"
                     }
                 }
             }
+
         }
     }
 }

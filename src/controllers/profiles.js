@@ -44,7 +44,7 @@ class Profiles extends BaseController {
         const id = req.params.id;
         const body = req.body;
         try {
-
+            
         }catch(err){
             next(this.Error(res, 'InvalidContent', 'Missing json data.'));
         }

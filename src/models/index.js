@@ -7,6 +7,8 @@ module.exports = function(db){
         "ResourcePermission": require('./resource-permission')(db),
         "Resource": require('./resource'),
         "Collection": require('./collection')(db),
-        "Profile": require('./profile')(db)
+        "Profile": require('./profile')(db),
+        "Category": require('./category')(db),
+        "Appointment": require('./appointment')
     }
 }
