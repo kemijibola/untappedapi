@@ -60,15 +60,4 @@ class Uploads extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Uploads(lib);
-    controller.addAction({
-        'path': '/uploads',
-        'method': 'GET',
-        'summary': 'Process file upload on the server',
-        'responseClass': 'Upload',
-        'nickName': 'uploadUpload',
-    }, controller.index)
-
-    return controller;
-}
+module.exports = Uploads

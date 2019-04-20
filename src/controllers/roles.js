@@ -1,5 +1,4 @@
 const BaseController = require('./baseController');
-
 class Roles extends BaseController {
     constructor(lib){
         super();
@@ -42,23 +41,4 @@ class Roles extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Roles(lib);
-    controller.addAction({
-        'path': '/roles',
-        'method': 'POST',
-        'summary': 'Adds a new role to the database',
-        'responseClass': 'Role',
-        'nickName': 'addRole',
-    }, controller.create)
-
-    controller.addAction({
-        'path': '/roles',
-        'method': 'GET',
-        'summary': 'Index page',
-        'responseClass': 'Role',
-        'nickName': 'getRoles',
-    }, controller.index)
-
-    return controller;
-}
+module.exports = Roles

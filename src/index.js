@@ -5,6 +5,10 @@ AWS.config.region = 'us-east-2';
 var s3 = new AWS.S3();
 const server = require('./server/server');
 
+// server({
+//     app,
+//     port: 9000
+// })
 
 (function(){
     let params = {

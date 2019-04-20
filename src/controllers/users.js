@@ -131,32 +131,4 @@ class Users extends BaseController {
     }  
 }
 
-module.exports = function(lib){
-    let controller = new Users(lib);
-    controller.addAction({
-        'path': '/users',
-        'method': 'POST',
-        'params': '',
-        'summary': 'Adds a new user to the database',
-        'responseClass': 'User',
-        'nickName': 'addUser',
-    }, controller.signup)
-
-    // controller.addAction({
-    //     'path': '/users',
-    //     'method': 'GET',
-    //     'summary': 'Index page',
-    //     'responseClass': 'User',
-    //     'nickName': 'getUsers',
-    // }, controller.index)
-
-    // controller.addAction({
-    //     'path': '/users/:id',
-    //     'method': 'GET',
-    //     'summary': 'Index page',
-    //     'responseClass': 'User',
-    //     'nickName': 'getUser',
-    // }, controller.getById)
-
-    return controller;
-}
+module.exports = Users

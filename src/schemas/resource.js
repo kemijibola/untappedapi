@@ -3,7 +3,7 @@ module.exports = {
     "properties": {
         "name": {
             "type": "string",
-            "description": "The name of url. e.g /users"
+            "description": "The name of service e.g /users"
         }
     }
 }

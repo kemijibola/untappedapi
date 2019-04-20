@@ -29,15 +29,4 @@ class Appointments extends BaseController {
 
 }
 
-module.exports = function(lib){
-    let controller = new Appointments(lib);
-    controller.addAction({
-        'path': '/appointments',
-        'method': 'POST',
-        'summary': 'Adds a new appointment to the database',
-        'responseClass': 'Appointment',
-        'nickName': 'addAppointment',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = Appointments

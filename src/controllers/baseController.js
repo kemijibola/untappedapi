@@ -6,39 +6,17 @@ const helpers = require('../lib/helpers');
 
 class BaseController {
     constructor(){
-        this.actions = [];
-        this.server = null;
-    }
-
-    setUpActions(app, sw){
-        this.server = app;
-        this.actions.forEach(action => {
-            let method = action['spec']['method'];
-            // uncomment when setting up swagger
-            // logger.info(`Setting up auto-doc for (${method} ) - ${action['spec']['nickName']}`)
-            //sw['add' + method](action);
-            app[method.toLowerCase()](action['spec']['path'], action['action']);
-        });
-    }
-    addAction(spec,fn){
-        let newAct = {
-            'spec': spec,
-            'action': fn.bind(this)
-        }
-        this.actions.push(newAct);
     }
 
     transformResponse(res, status, data, message){
         if (!status){
-            const error = new ErrorHandler(`Error of type ${data} found: ${message}`);
+            const error = new ErrorHandler(`Error of type ${data} found: ${ message}`);
             if(ERRORCODES[data]){
                 return res.status(ERRORCODES[data]).json({
                     status: status,
                     error: {
-                        name: error.name,
                         type: data,
-                        message: error.message,
-                        stack: error.stack
+                        message: error.message
                     },
                     data: {}
                 })
@@ -46,10 +24,8 @@ class BaseController {
                 return res.status(400).json({
                     status: status,
                     error: {
-                        name: error.name,
                         type: data,
-                        message: error.message,
-                        stack: error.stack
+                        message: error.message
                     },
                     data: {}
                 })
@@ -61,28 +37,6 @@ class BaseController {
             data: data
         })
     }
-
-    // Error(res, type, msg){
-    //     logger.error("Error of type " + type + " found: " + msg);
-    //     const error = new ErrorHandler(`Error of type ${type} found: ${msg}`);
-    //     if (ERRORCODES[type]){
-    //         return res.status(ERRORCODES[type]).json({
-    //             name: error.name,
-    //             type: type,
-    //             msg: error.message,
-    //             info: error.stack
-    //         });
-    //     } else {
-            
-    //         return res.json({
-    //             error: true,
-    //             name: error.name,
-    //             type: type,
-    //             msg: error.message,
-    //             info: error.stack
-    //         })
-    //     }
-    // }
 
     writeHAL(obj){
         if(Array.isArray(obj)){

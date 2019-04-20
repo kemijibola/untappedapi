@@ -39,23 +39,4 @@ class Resources extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Resources(lib);
-    controller.addAction({
-        'path': '/resources',
-        'method': 'POST',
-        'summary': 'Adds a new resource to the database',
-        'responseClass': 'Resource',
-        'nickName': 'addResource',
-    }, controller.create)
-
-    controller.addAction({
-        'path': '/resources',
-        'method': 'GET',
-        'summary': 'Index page',
-        'responseClass': 'Resource',
-        'nickName': 'getResources',
-    }, controller.index)
-
-    return controller;
-}
+module.exports = Resources

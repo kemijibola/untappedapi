@@ -39,15 +39,4 @@ class Permissions extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Permissions(lib);
-    controller.addAction({
-        'path': '/permissions',
-        'method': 'POST',
-        'summary': 'Adds a new permission to the database',
-        'responseClass': 'Permission',
-        'nickName': 'addPermission',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = Permissions

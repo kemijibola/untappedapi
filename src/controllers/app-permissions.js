@@ -40,15 +40,4 @@ class AppPermissions extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new AppPermissions(lib);
-    controller.addAction({
-        'path': '/app-permissions',
-        'method': 'POST',
-        'summary': 'Adds a new app-permission to the database',
-        'responseClass': 'AppPermission',
-        'nickName': 'addAppPermission',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = AppPermissions

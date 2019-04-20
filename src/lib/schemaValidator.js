@@ -5,6 +5,7 @@ const schemas = require('../request_schemas/')
 module.exports = {
     validateRequest: validate
 }
+
 function validate(req){
     let res = { valid: true };
     tv4.addFormat(formats);

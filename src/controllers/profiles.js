@@ -51,23 +51,4 @@ class Profiles extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Profiles(lib);
-    controller.addAction({
-        'path': '/profiles',
-        'method': 'POST',
-        'summary': 'Adds new user profile to the database',
-        'responseClass': 'Profile',
-        'nickName': 'addProfile',
-    }, controller.create)
-
-    controller.addAction({
-        'path': '/profiles',
-        'method': 'GET',
-        'summary': 'Index page',
-        'responseClass': 'Profile',
-        'nickName': 'getProfiles',
-    }, controller.index)
-
-    return controller;
-}
+module.exports = Profiles

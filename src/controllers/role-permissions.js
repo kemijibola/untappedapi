@@ -39,15 +39,4 @@ class RolePermissions extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new RolePermissions(lib);
-    controller.addAction({
-        'path': '/role-permissions',
-        'method': 'POST',
-        'summary': 'Adds a new role-permission to the database',
-        'responseClass': 'RolePermission',
-        'nickName': 'addRolePermission',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = RolePermissions

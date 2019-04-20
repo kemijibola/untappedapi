@@ -39,23 +39,4 @@ class UserTypes extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new UserTypes(lib);
-    controller.addAction({
-        'path': '/user-types',
-        'method': 'POST',
-        'summary': 'Adds a new user-type to the database',
-        'responseClass': 'UserType',
-        'nickName': 'addUserType',
-    }, controller.create)
-
-    controller.addAction({
-        'path': '/user-types',
-        'method': 'GET',
-        'summary': 'Adds a new user-type to the database',
-        'responseClass': 'UserType',
-        'nickName': 'getTypes',
-    }, controller.index)
-
-    return controller;
-}
+module.exports = UserTypes

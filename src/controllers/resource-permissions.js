@@ -39,15 +39,4 @@ class ResourcePermissions extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new ResourcePermissions(lib);
-    controller.addAction({
-        'path': '/resource-permissions',
-        'method': 'POST',
-        'summary': 'Adds a new role-permission to the database',
-        'responseClass': 'ResourcePermission',
-        'nickName': 'addResourcePermission',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = ResourcePermissions

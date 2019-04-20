@@ -25,8 +25,7 @@ module.exports = (options) => {
         res.status(400).send(results);
     })
 
-    lib.helpers.setupRoutes(app, swagger, lib);
-
+    require('../routes')(lib, app);
 
     app.listen(port, () => {
         lib.logger.info(`Server started successfully on ${port}`);

@@ -1,26 +1,9 @@
 const halson = require('halson');
 
 module.exports = {
-    makeHAL: makeHAL,
-    setupRoutes: setupRoutes,
-    validateKey: validateKey,
-    sendMail: mailBuilder
+    makeHAL: makeHAL
 }
 
-function setupRoutes(server, swagger, lib){
-    for(controller in lib.controllers){
-        cont = lib.controllers[controller](lib);
-        cont.setUpActions(server, swagger);
-    }
-}
-function validateKey(hmacdata, key, lib){
-    if(+key === 777) return true;
-    let hmac = require('crypto')
-                .createHmac('md5', '')
-                .update(hmacdata)
-                .digest('hex');
-    return hmac;
-}
 function makeHAL(data, links, embed){
     let obj = halson(data);
     if (links && links.length > 0){
@@ -37,7 +20,4 @@ function makeHAL(data, links, embed){
         });
     }
     return obj;
-}
-function mailBuilder(){
-    return 
 }

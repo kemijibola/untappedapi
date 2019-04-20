@@ -32,15 +32,4 @@ class Categories extends BaseController {
 
 }
 
-module.exports = function(lib){
-    let controller = new Categories(lib);
-    controller.addAction({
-        'path': '/categories',
-        'method': 'POST',
-        'summary': 'Adds a new category to the database',
-        'responseClass': 'Category',
-        'nickName': 'addCategory',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = Categories

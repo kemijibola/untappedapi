@@ -6,7 +6,7 @@ module.exports = {
             "description": "Short album title",
         },
         "media_type": {
-            "string": "string",
+            "type": "string",
             "description": "Upload type. {'audio','video','image'}"
         },
         "album_cover": {

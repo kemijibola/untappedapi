@@ -94,23 +94,4 @@ class Collections extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Collections(lib);
-    controller.addAction({
-        'path': '/collections',
-        'method': 'POST',
-        'summary': 'Adds a new collection to the database',
-        'responseClass': 'Collection',
-        'nickName': 'addCollection',
-    }, controller.create)
-
-    controller.addAction({
-        'path': '/collections/:id',
-        'method': 'PUT',
-        'summary': 'Updates already existing collection in database',
-        'responseClass': 'Collection',
-        'nickName': 'updateCollection',
-    }, controller.update)
-
-    return controller;
-}
+module.exports = Collections

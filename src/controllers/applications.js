@@ -39,15 +39,4 @@ class Applications extends BaseController {
     }
 }
 
-module.exports = function(lib){
-    let controller = new Applications(lib);
-    controller.addAction({
-        'path': '/applications',
-        'method': 'POST',
-        'summary': 'Adds a new application to the database',
-        'responseClass': 'Application',
-        'nickName': 'addApplication',
-    }, controller.create)
-
-    return controller;
-}
+module.exports = Applications

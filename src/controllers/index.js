@@ -1,5 +1,6 @@
 module.exports = {
     Users: require('./users'),
+    Roles: require('./roles'),
     UserTypes: require('./user-types'),
     // Applications: require('./applications'),
     ApplicationPermissions: require('./app-permissions'),
