@@ -5,6 +5,7 @@ module.exports = function(db){
         "User": require('./user')(db),
         "Role": require('./role')(db),
         "ResourcePermission": require('./resource-permission')(db),
+        "RolePermission": require('./role-permission')(db),
         "Resource": require('./resource'),
         "Collection": require('./collection')(db),
         "Profile": require('./profile')(db),

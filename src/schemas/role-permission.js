@@ -6,15 +6,10 @@ module.exports = {
             "description": "Role",
             "$ref": "Role"
         },
-        "permissions": {
-            "type": "array",
-            "description": "List of permissions assigned to configured role",
-            "$ref": "Permission"
-        },
-        "resource": {
+        "resource_permission": {
             "type": "object",
-            "description": "The url role is being configured on",
-            "$ref": "Resource"
+            "description": "Resource permission configured",
+            "$ref": "ResourcePermission"
         }
     }
 }

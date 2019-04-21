@@ -1,4 +1,5 @@
 const BaseController = require('./baseController');
+const mongoose = require('mongoose');
 class RolePermissions extends BaseController {
     constructor(lib){
         super();
@@ -14,8 +15,20 @@ class RolePermissions extends BaseController {
         const body = req.body;
         if(body){
             try{
-                let rolePermissionModel = await this.lib.db.model('RolePermission').findOne({name: body.name});
-                if(rolePermissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role-Permission with name ${rolePermissionExist.name} exists.`))
+                let criteria = {};
+                // TODO: validate role is a valid role
+                // validate resource_permission is valid
+
+                // check :: a role can be configured for a route
+                // let _rId = mongoose.Types.ObjectId(body.role);
+                // let rpId = mongoose.Types.ObjectId(body.resource_permission)
+                criteria.$and = [
+                    { role: body.role },
+                    { resource_permission: body.resource_permission }
+                ]
+                let rolePermissionModel = await this.lib.db.model('RolePermission').findOne(criteria)
+                console.log(rolePermissionModel);
+                if(rolePermissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role id: ${rolePermissionModel.role} has been configured for route: ${rolePermissionModel.resource_permission}.`))
                 rolePermissionModel = this.lib.db.model('RolePermission')(body);
                 const rolePermission = await rolePermissionModel.save();
                 if (rolePermission && typeof rolePermission.log === 'function'){
