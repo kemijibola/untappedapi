@@ -15,11 +15,10 @@ class Categories extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const category = await this.lib.db.model('Category').findOne({name: body.name}).cache();
-                if(!category) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'Category not found'))
-
-                let newCategory = this.lib.db.model('Category')(body);
-                const category = await newCategory.save();
+                let categoryModel = await this.lib.db.model('Category').findOne({name: body.name}).cache();
+                if(!categoryModel) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'Category not found'))
+                categoryModel = this.lib.db.model('Category')(body);
+                const category = await categoryModel.save();
                 const halObj = this.writeHAL(category);
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){

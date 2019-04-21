@@ -14,12 +14,12 @@ class Roles extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const roleExist = await this.lib.db.model('Role').findOne({ name: body.name });
-                if(roleExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role with name ${ roleExist.name } exists.`))
-                const userType = await this.lib.db.model('UserType').findById({ _id: body.user_type_id })
-                if(!userType) return next(this.Error(res, 'EntityNotFound', `Could not determine user type of: ${ body.user_type_id }`))
-                let newRole = this.lib.db.model('Role')(body);
-                const role = await newRole.save();
+                let roleModel = await this.lib.db.model('Role').findOne({ name: body.name });
+                if(roleModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role with name ${ roleModel.name } exists.`))
+                const userTypeModel = await this.lib.db.model('UserType').findById({ _id: body.user_type })
+                if(!userTypeModel) return next(this.transformResponse(res, false, 'ResourceNotFound', `Could not determine user type of: ${ body.user_type }`))
+                roleModel = this.lib.db.model('Role')(body);
+                const role = await roleModel.save();
                 // if (role && typeof role.log === 'function'){
                 //     const data = {
                 //         action: `create-role of ${role._id}`, // should capture action id for tracking e.g userType._id

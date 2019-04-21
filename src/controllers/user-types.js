@@ -7,17 +7,18 @@ class UserTypes extends BaseController {
 
     async index(req, res, next) {
         const roles = await this.lib.db.model('UserType').find().cache();
-        this.writeHAL(res, roles);
+        const halObj = this.writeHAL(roles);
+        return this.transformResponse(res, true, halObj, 'Fetch operation successful');
     }
 
     async create(req, res, next){
         const body = req.body;
         if(body){
             try{
-                const userTypeExist = await this.lib.db.model('UserType').findOne({name: body.name});
-                if(userTypeExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `User type with name ${userTypeExist.name} exists.`))
-                let newUserType = this.lib.db.model('UserType')(body);
-                const userType = await newUserType.save();
+                let userTypeModel = await this.lib.db.model('UserType').findOne({name: body.name});
+                if(userTypeModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `User type with name ${userTypeExist.name} exists.`))
+                userTypeModel = this.lib.db.model('UserType')(body);
+                const userType = await userTypeModel.save();
                 if (userType && typeof userType.log === 'function'){
                     const data = {
                         action: `create-user-type of ${userType._id}`, // should capture action id for tracking e.g userType._id

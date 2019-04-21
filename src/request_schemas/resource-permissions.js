@@ -4,17 +4,14 @@ module.exports = {
         "schema": {
             "type": "object",
             "properties": {
-               "role_id": {
+               "resource": {
                     "type": 'string'
                 },
                 "permissions": {
                     "type": 'array'
-                },
-                "app_id": {
-                    "type": 'string'
                 }
             },
-            "required": ['role_id', 'permissions', 'app_id']
+            "required": ['role_id', 'permissions']
         }
     },
     "PUT": {

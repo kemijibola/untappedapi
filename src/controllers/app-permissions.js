@@ -15,10 +15,10 @@ class AppPermissions extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const appPermissionExist = await this.lib.db.model('AppPermission').findOne({name: body.name});
-                if(appPermissionExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role-Permission with name ${appPermissionExist.name} exists.`))
-                let newAppPermission = this.lib.db.model('AppPermission')(body);
-                const appPermission = await newAppPermission.save();
+                let appPermissionModel = await this.lib.db.model('AppPermission').findOne({name: body.name});
+                if(appPermissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role-Permission with name ${appPermissionExist.name} exists.`))
+                appPermissionModel = this.lib.db.model('AppPermission')(body);
+                const appPermission = await appPermissionModel.save();
                 if (appPermission && typeof appPermission.log === 'function'){
                     const data = {
                         action: `create-app-permission of ${appPermission._id}`, // should capture action id for tracking e.g permission._id

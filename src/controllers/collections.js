@@ -9,6 +9,7 @@ class Collections extends BaseController {
         const collections = await this.lib.db.model('Collection').find().cache();
         this.writeHAL(res, collections);
     }
+
     async lists(req, res, next){
         // all collections in db
         let criteria = {};
@@ -57,11 +58,11 @@ class Collections extends BaseController {
                     {title: title},        
                     {media_type: media_type}  
                 ];
-                const collectionExist = await this.lib.db.model('Collection').findOne(criteria);
-                if(collectionExist) return next(this.Error(res, 'DuplicateRecord', `${media_type} Album with title ${collection.name} exists.`))
-
-                let newCollection = this.lib.db.model('Collection')(body);
-                const collection = await newCollection.save();
+                
+                const collectionModel = await this.lib.db.model('Collection').findOne(criteria);
+                if(collectionModel) return next(this.Error(res, 'DuplicateRecord', `${media_type} Album with title ${collection.name} exists.`))
+                collectionModel = this.lib.db.model('Collection')(body);
+                const collection = await collectionModel.save();
                 const halObj = this.writeHAL(response);
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
 

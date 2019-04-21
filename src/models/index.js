@@ -9,6 +9,8 @@ module.exports = function(db){
         "Collection": require('./collection')(db),
         "Profile": require('./profile')(db),
         "Category": require('./category')(db),
-        "Appointment": require('./appointment')
+        "Appointment": require('./appointment')(db),
+        "Permission": require('./permission')(db),
+        "Resource": require('./resource')(db)
     }
 }

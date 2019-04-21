@@ -8,7 +8,7 @@ module.exports = {
                     "type": 'string'
                 }
             },
-            "required": ['email']
+            "required": ['name']
         }
     },
     "PUT": {

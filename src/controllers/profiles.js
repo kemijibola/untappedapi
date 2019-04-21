@@ -17,10 +17,9 @@ class Profiles extends BaseController {
         if(body){
             try{
                 const { user_id, categories, } = body;
-                const user = await this.lib.db.model('User').findById({_id: user_id}).cache()
-                if(!user) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'User not found'))
+                const userModel = await this.lib.db.model('User').findById({_id: user_id}).cache()
+                if(!userModel) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'User not found'))
                 if(categories.length < 1) next(this.transformResponse(res, false, 'BadRequest', 'You must select at least one category'))
-
                 // confirm validity of categries
                 for (const category of categories){
                     const id = mongoose.Types.ObjectId(category);

@@ -6,7 +6,7 @@ class RolePermissions extends BaseController {
     }
 
     async index(req, res, next) {
-        const rolePermissions = await this.lib.db.model('RolePermission').find().cache();
+        const rolePermissions = await this.lib.db.model('RolePermission').find();
         this.writeHAL(res, rolePermissions);
     }
 
@@ -14,10 +14,10 @@ class RolePermissions extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const rolePermissionExist = await this.lib.db.model('RolePermission').findOne({name: body.name});
-                if(rolePermissionExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role-Permission with name ${rolePermissionExist.name} exists.`))
-                let newRolePermission = this.lib.db.model('RolePermission')(body);
-                const rolePermission = await newRolePermission.save();
+                let rolePermissionModel = await this.lib.db.model('RolePermission').findOne({name: body.name});
+                if(rolePermissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role-Permission with name ${rolePermissionExist.name} exists.`))
+                rolePermissionModel = this.lib.db.model('RolePermission')(body);
+                const rolePermission = await rolePermissionModel.save();
                 if (rolePermission && typeof rolePermission.log === 'function'){
                     const data = {
                         action: `create-role-permission of ${rolePermission._id}`, // should capture action id for tracking e.g permission._id

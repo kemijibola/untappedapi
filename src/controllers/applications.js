@@ -14,10 +14,10 @@ class Applications extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const applicationExist = await this.lib.db.model('Application').findOne({name: body.name});
-                if(applicationExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Application with name ${applicationExist.name} exists.`))
-                let newApplication = this.lib.db.model('Application')(body);
-                const application = await newApplication.save();
+                let applicationModel = await this.lib.db.model('Application').findOne({name: body.name});
+                if(applicationModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Application with name ${applicationExist.name} exists.`))
+                applicationModel = this.lib.db.model('Application')(body);
+                const application = await applicationModel.save();
                 if (application && typeof application.log === 'function'){
                     const data = {
                         action: `create-application of ${application._id}`, // should capture action id for tracking e.g permission._id

@@ -2,6 +2,7 @@ const config = require('config');
 const _ = require('underscore');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const settings = require('../config/settings');
 
 let obj = {
     getModelFromSchema: getModelFromSchema,
@@ -9,7 +10,8 @@ let obj = {
         return this.models[mName];
     },
     connect: function(callback){
-        mongoose.connect(process.env['database_host'] + "/" +process.env['database_name']);
+        // mongoose.connect(process.env['database_host'] + "/" +process.env['database_name']);
+        mongoose.connect(settings.database_host + "/" +settings.database_name);
         this.connection = mongoose.connection;
         this.connection.on('error', callback);
         this.connection.on('open', callback);

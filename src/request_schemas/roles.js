@@ -7,11 +7,11 @@ module.exports = {
                "name": {
                     "type": 'string'
                 },
-                "user_type_id": {
+                "user_type": {
                     "type": "string"
                 }
             },
-            "required": ['name', 'user_type_id']
+            "required": ['name', 'user_type']
         }
     },
     "PUT": {

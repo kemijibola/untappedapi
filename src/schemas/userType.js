@@ -3,7 +3,7 @@ module.exports = {
     "properties": {
         "name": {
             "type": "string",
-            "description": "Type of user."
+            "description": "Type of user"
         },
         "global": {
             "type": "boolean",

@@ -17,6 +17,7 @@ module.exports = (options) => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
+    // this is validating json request schema
     app.use((req, res, next) => {
         let results = lib.schemaValidator.validateRequest(req);
         if(results.valid){

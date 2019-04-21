@@ -9,7 +9,9 @@ module.exports = {
         "permissions": {
             "type": "array",
             "description": "List of all permissions that can be performed on a resource",
-            "$ref": "Permission"
+            "items": {
+                "$ref": "Permission"
+            }
         }
     }
 }

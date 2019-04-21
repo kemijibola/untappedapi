@@ -6,18 +6,19 @@ class Permissions extends BaseController {
     }
 
     async index(req, res, next) {
-        const permissions = await this.lib.db.model('Permission').find().cache();
-        this.writeHAL(res, permissions);
+        const permissions = await this.lib.db.model('Permission').find();
+        const halObj = this.writeHAL(permissions);
+        return this.transformResponse(res, true, halObj, 'Fetch operation successful');
     }
 
     async create(req, res, next){
         const body = req.body;
         if(body){
             try{
-                const permissionExist = await this.lib.db.model('Permission').findOne({name: body.name});
-                if(permissionExist) return next(this.transformResponse(res, false, 'DuplicateRecord', `Permission with name ${permissionExist.name} exists.`))
-                let newPermission = this.lib.db.model('Permission')(body);
-                const permission = await newPermission.save();
+                const permissionModel = await this.lib.db.model('Permission').findOne({name: body.name});
+                if(permissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Permission with name ${permissionExist.name} exists.`))
+                permissionModel = this.lib.db.model('Permission')(body);
+                const permission = await permissionModel.save();
                 if (permission && typeof permission.log === 'function'){
                     const data = {
                         action: `create-permission of ${permission._id}`, // should capture action id for tracking e.g permission._id
