@@ -57,7 +57,7 @@ class Users extends BaseController {
                 // We assign default role for all new user by user types
                 criteria.$and = [
                     { user_type: userType._id },
-                    { role_type: 'FREE' }
+                    { role_type: ROLETYPES.FREE }
                 ]
                 const roles = await this.lib.db.model('Role').find(criteria);
                 

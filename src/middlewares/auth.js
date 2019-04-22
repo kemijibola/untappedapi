@@ -2,7 +2,8 @@ const { JWTOPTIONS } = require('../lib/constants');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const BaseController = require('../controllers/baseController');
-const _baseController = new BaseController();
+const baseController = new BaseController();
+const keys = require('../config/settings');
 
 module.exports = {
     requireLogin: validateToken,
@@ -19,20 +20,21 @@ async function validateToken(req, res, next) {
      * */ 
     const authorization = req.headers["x-access-token"] || req.headers["authorization"];
     if (authorization === null || typeof authorization === 'undefined'){
-        return _baseController.transformResponse(res, false, 'InvalidCredentials', 'You must log in!')
+        return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Header is not set.'))
     }
     const encodedJWT = authorization.substr('JWT '.length);
-    // verifying the token consists of the three parts [header,payload,signature]
+
+    // extra verification the token consists of the three parts [header,payload,signature]
     const parts = encodedJWT.split('.');
     if (parts.length !== 3){
-        return _baseController.transformResponse(res, false, 'InvalidCredentials', 'You must log in!')
+        return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
     
-    // verifying the token is signed with valid key id
+    // extra verification the token is signed with valid key id
     // TODO: extend check to accomodate multiple keys, incase of future key rotation
     const header = JSON.parse(Buffer.from(parts[0], 'base64'));
-    if(header.kid !== JWTOPTIONS.CURRENTKEY){
-        return _baseController.transformResponse(res, false, 'InvalidCredentials', 'You must log in!')
+    if(header.kid !== keys.rsa_kid){
+        return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
     const { issuer, subject, audience } = req.params;
     var verifyOptions = {
@@ -43,10 +45,11 @@ async function validateToken(req, res, next) {
         algorithm:  ["RS256"]
     }
     try{
-        req.user = await jwt.verify(encodedJWT, config.get('public_key'), verifyOptions)
+        req.user = await jwt.verify(encodedJWT, keys.rsa_public_key, verifyOptions)
+        console.log(req.user);
         next();
     }catch(err){
-        return _baseController.transformResponse(res, false, 'InvalidCredentials', 'You must log in!')
+        return next(baseController.transformResponse(res, false, 'InvalidCredentials', err))
     }
 
 }

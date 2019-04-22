@@ -32,31 +32,26 @@ class Profiles extends BaseController {
 
                 for (const item in categoriesMap){
                     const found = await this.lib.db.model('Category').findById({_id: item})
-                    if(!found) return next(this.transformResponse(res, false, 'BadRequest', 'Invalid category'))
+                    if(!found) return next(this.transformResponse(res, false, 'BadRequest', `Invalid category id: ${item}`))
                 }
-                
                 body.categories = [...Object.keys(categoriesMap)];
-    
-                // for (const category of categories){
-                //     const id = mongoose.Types.ObjectId(category);
-                //     const found = await this.lib.db.model('Category').findById({_id: id})
-                //     if(!found) return next(this.transformResponse(res, false, 'BadRequest', 'Invalid category'))
-                // }
+
                 const userType = userModel.user_type.name.toUpperCase();
-                // let newProfile = this.lib.db.model('Profile')(body);
                 let newProfile;
                 switch(userType){
                     case UNTAPPEDUSERTYPES.TALENT:
+                        // TODO:: physical_stats not saving to db
                         let talent = new ProfileBuilder(userModel._id)
-                                        .createTalent(body.stage_name, body.physical_stats, body.experiences, body.skills)
-                                        .createBasicInfo(body.full_name, body.location, body.profile_picture, body.phone_numbers, body.short_bio)
+                                        .createTalent(body.stage_name, body.physical_stats, body.experiences)
+                                        .createBasicInfo(body.full_name, body.location, body.profile_picture, body.phone_numbers, body.short_bio, body.categories)
                                         .addSocialMedias(body.social_media)
                                         .build();
                         newProfile = this.lib.db.model('Talent')(talent);
                     break;
                     case UNTAPPEDUSERTYPES.PROFESSIONAL:
                         let professional = new ProfileBuilder(userModel._id)
-                                                .createProfessional(body.company_name, body.banner_image, body.interests)
+                                                .createProfessional(body.company_name, body.banner_image)
+                                                .createBasicInfo(body.full_name, body.location, body.profile_picture, body.phone_numbers, body.short_bio, body.categories)
                                                 .addSocialMedias(body.social_media)
                                                 .build()
                         newProfile = this.lib.db.model('Professional')(professional);

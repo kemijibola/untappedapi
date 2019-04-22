@@ -5,7 +5,7 @@ class ProfileBuilder {
         this.user = user
     }
 
-    createTalent(stageName= '', physicalStats= {}, experiences= [], skills= []){
+    createTalent(stageName= '', physicalStats= {}, experiences= []){
         this.stage_name = stageName
         this.physical_stats = {
             height: physicalStats.height,
@@ -13,21 +13,20 @@ class ProfileBuilder {
             color: physicalStats.color
         }
         this.experiences = experiences
-        this.skills = skills
         return this;
     }
-    createProfessional(companyName= '', bannerImage= '', interests = []){
+    createProfessional(companyName= '', bannerImage= ''){
         this.company_name = companyName
         this.banner_image = bannerImage
-        this.interests = interests
         return this;
     }
-    createBasicInfo(fullName, location= '', profilePicture= '', phoneNumbers= [], shortBio= ''){
+    createBasicInfo(fullName, location= '', profilePicture= '', phoneNumbers= [], shortBio= '', categories= []){
         this.full_name = fullName
         this.location = location
         this.profile_picture = profilePicture
         this.phone_numbers = phoneNumbers
         this.short_bio = shortBio
+        this.categories = categories
         return this;
     }
     addSocialMedias(handles= []){
