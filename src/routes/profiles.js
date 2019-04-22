@@ -6,7 +6,7 @@ module.exports = (lib, app) => {
         new Profiles(lib).index(req, res, next)
     });
 
-    app.get('/api/profiles', async (req, res, next) => {
+    app.post('/api/profiles', async (req, res, next) => {
         new Profiles(lib).create(req, res, next)
     })
 }

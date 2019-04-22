@@ -17,25 +17,25 @@ class Profiles extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const { user_id, categories, } = body;
-                const userModel = await this.lib.db.model('User').findById({_id: user_id}).populate('usertype').cache()
+                const { user, categories, } = body;
+                const userModel = await this.lib.db.model('User').findById({_id: user}).populate('user_type')
                 if(!userModel) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'User not found'))
                 if(categories.length < 1) next(this.transformResponse(res, false, 'BadRequest', 'You must select at least one category'))
                 // confirm validity of categries
 
                 // TODO: validating client's parameters
                 // type cast string id to mongoose ObjectId
-                let categories = body.categories.reduce((acc, item) => {
+                let categoriesMap = body.categories.reduce((acc, item) => {
                     acc[item] = mongoose.Types.ObjectId(item);
                     return acc
                 }, {})
 
-                for (const item in categories){
-                    const found = await this.lib.db.model('Category').findById({_id: categories[item]})
+                for (const item in categoriesMap){
+                    const found = await this.lib.db.model('Category').findById({_id: item})
                     if(!found) return next(this.transformResponse(res, false, 'BadRequest', 'Invalid category'))
                 }
                 
-                body.categories = [...Object.keys(categories)];
+                body.categories = [...Object.keys(categoriesMap)];
     
                 // for (const category of categories){
                 //     const id = mongoose.Types.ObjectId(category);

@@ -30,7 +30,7 @@ class ProfileBuilder {
         this.short_bio = shortBio
         return this;
     }
-    addSocialMedias(handles){
+    addSocialMedias(handles= []){
         this.social_media = handles
         return this;
     }

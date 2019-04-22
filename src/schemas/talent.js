@@ -58,10 +58,10 @@ module.exports = {
             "type": "string",
             "description": "User profile picture",
         },
-        "physical_stats": {
-            "description": "Users's physical attributes",
-            "$ref": "#definitions/physical_attributes"
-        },
+        // "physical_stats": {
+        //     "description": "Users's physical attributes",
+        //     "$ref": "#definitions/physical_attributes"
+        // },
         "experiences": {
             "type": "array",
             "description": "List of user's experience",

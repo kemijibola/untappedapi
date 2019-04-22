@@ -16,7 +16,7 @@ class Categories extends BaseController {
         if(body){
             try{
                 let categoryModel = await this.lib.db.model('Category').findOne({name: body.name}).cache();
-                if(!categoryModel) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'Category not found'))
+                if(categoryModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Category with name ${ categoryModel.name } exists.`))
                 categoryModel = this.lib.db.model('Category')(body);
                 const category = await categoryModel.save();
                 const halObj = this.writeHAL(category);

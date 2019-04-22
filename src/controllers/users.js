@@ -101,7 +101,8 @@ class Users extends BaseController {
         }
         const userObj = {
             email: body.email,
-            password: body.password    
+            password: body.password,
+            user_type: body.user_type
         }
         const payload = {
             permissions: []
