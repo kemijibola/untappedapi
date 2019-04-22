@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const helpers = require('../lib/helpers');
 
 module.exports = function(db){
-    let schema = require("../schemas/profile");  
-    let modelDef = db.getModelFromSchema(schema)
+    let schema = require("../schemas/professional");  
+    let modelDef = db.getModelFromSchema(schema);
 
-    modelDef.schema.methods.toHAL = function(){    
+    modelDef.schema.methods.toHAL = function(){                
         let json = JSON.stringify(this) //toJSON()                
         return helpers.makeHAL(json);        
     }

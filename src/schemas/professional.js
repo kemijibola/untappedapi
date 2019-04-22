@@ -1,14 +1,18 @@
 module.exports = {
-    "id": "Profile",
+    "id": "Professional",
     "properties": {
-        "stage_name": {
+        "company_name": {
             "type": "string",
             "description": "User's stage name"
         },
         "full_name": {
-            "type": "object",
+            "type": "string",
             "description": "User's full name",
             "$ref": "UserType"
+        },
+        "location": {
+            "type": "string",
+            "description": "User's location"
         },
         "phone_numbers": {
             "type": "array",
@@ -28,7 +32,7 @@ module.exports = {
         },
         "categories": {
             "type": "array",
-            "description": "User categories",
+            "description": "User's interests",
             "items": {
                 "$ref": "Category"
             }
@@ -40,21 +44,13 @@ module.exports = {
                 "type": "string"
             }
         },
-        "images": {
-            "type": "array",
-            "description": "Profile and Banner pictures and other type of user picture",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string"
-                    }
-                }
-            }
-
+        "profile_picture": {
+            "type": "string",
+            "description": "User profile picture",
+        },
+        "banner_image": {
+            "type": "string",
+            "description": "User's banner image"
         }
     }
 }

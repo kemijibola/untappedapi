@@ -9,7 +9,8 @@ module.exports = {
         "RolePermission": require('./role-permission'),
         "Resource": require('./resource'),
         "Collection": require('./collection'),
-        "Profile": require('./profile'),
-        "Category": require('./category')
+        "Category": require('./category'),
+        "Talent": require('./talent'),
+        "Professional": require('./professional')
     }
 }

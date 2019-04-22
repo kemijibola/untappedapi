@@ -1,9 +1,10 @@
 const BaseController = require('./baseController');
-const { JWTOPTIONS} = require('../lib/constants');
+const { JWTOPTIONS, ROLETYPES} = require('../lib/constants');
 const ApiResponse = require('../models/response');
 const { authorizationService, emailService } = require('../services/index');
 const { sendMail } = require('../lib/helpers');
-const config = require('config');
+// const config = require('config');
+let keys = require('../config/settings');
 // var AWS = require('aws-sdk');
 // AWS.config.region = 'us-east-2b';
 // var s3 = new AWS.S3();
@@ -42,31 +43,44 @@ class Users extends BaseController {
         const body = req.body;
         if(body){
             try{
-                // This is checking that the user_type_id sent by client is a valid type of user 
+                let criteria = {};
+                const email = body.email.trim().toLowerCase();
+                // confirm the email does not already exist in the database
+                let userModel = await this.lib.db.model('User').findOne({email: email })
+                if(userModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `There is a user registered with this email: ${ email }`))
+
+                // This is checking that the user_type sent by client is a valid type of user 
                 // in the database. For Example: Talent,Audience,Professional
-
-                const userType = await this.lib.db.model('UserType').findById({ _id: body.user_type_id })
-                if(!userType) return next(this.Error(res, 'EntityNotFound', `Could not determine user type of: ${ body.user_type_id }`))
-
-                // We are getting the roles of the user based on the type of user the client sent
-                const roles = await this.lib.db.model('Role').find({ user_type_id: body.user_type_id });
+                const userType = await this.lib.db.model('UserType').findById({ _id: body.user_type })
+                if(!userType) return next(this.transformResponse(res, false, 'ResourceNotFound', `Could not determine user type of: ${ body.user_type }`))
+                
+                // We assign default role for all new user by user types
+                criteria.$and = [
+                    { user_type: userType._id },
+                    { role_type: 'FREE' }
+                ]
+                const roles = await this.lib.db.model('Role').find(criteria);
                 
                 const newUser = await this.createUser(roles, body);
                 // send WelcomePack Mail based on type of user
-                this.writeHAL(res, newUser.token);
+
+                const halObj = this.writeHAL(newUser);
+                return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(res, this.Error(res,'InternalServerError', err.message))
+                next(res, this.transformResponse(res,false, 'InternalServerError', err.message))
             }
         }else {
-            next(this.Error(res, 'InvalidContent', 'Missing json data.'));
+            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }
 
-    async emailExists(req, res, next){
+    async emailExist(req, res, next){
         let body = req.body
         if (body){
             try {
-                const email = await this.lib.model('User').findOne({email: body.email.toLowerCase()});
+                const email = body.email.trim().toLowerCase();
+                const found = await this.lib.model('User').findOne({ email: email });
+                if(found)
                 this.writeHAL(res, email);
             }catch(err){
                 next(this.Error('InternalServerError', err));
@@ -82,17 +96,19 @@ class Users extends BaseController {
             subject: '',
             audience: body.audience,
             expiresIn: JWTOPTIONS.EXPIRESIN,
-            algorithm: config.publicKeys[JWTOPTIONS.CURRENTKEY].type,
-            keyid: JWTOPTIONS.CURRENTKEY
+            algorithm: keys.rsa_type,
+            keyid: keys.rsa_kid
         }
         const userObj = {
             email: body.email,
             password: body.password    
         }
         const payload = {
-            scopes: []
+            permissions: []
         };
-        const privateKey = config.secretKeys[JWTOPTIONS.CURRENTKEY].replace(/\\n/g, '\n');
+        const privateKey = keys.rsa_private[JWTOPTIONS.CURRENTKEY].replace(/\\n/g, '\n');
+
+        // saving new user to database
         let newUser = await this.lib.db.model('User')(userObj);
         const user = await newUser.save();
         

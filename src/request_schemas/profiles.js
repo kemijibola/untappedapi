@@ -4,14 +4,20 @@ module.exports = {
         "schema": {
             "type": "object",
             "properties": {
-               "name": {
+               "full_name": {
                     "type": 'string'
                 },
-                "user_id": {
+                "user": {
                     "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "categories": {
+                    "type": "array"
                 }
             },
-            "required": ['user_id', 'full_name', 'categories']
+            "required": ['user', 'full_name', 'location', 'categories']
         }
     },
     "PUT": {

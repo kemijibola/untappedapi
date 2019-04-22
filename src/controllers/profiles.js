@@ -1,6 +1,7 @@
 const BaseController = require('./baseController');
 const mongoose = require('mongoose');
-
+const ProfileBuilder = require('../builder/profileBuilder');
+const { UNTAPPEDUSERTYPES } = require('../lib/constants');
 class Profiles extends BaseController {
     constructor(lib){
         super();
@@ -17,17 +18,50 @@ class Profiles extends BaseController {
         if(body){
             try{
                 const { user_id, categories, } = body;
-                const userModel = await this.lib.db.model('User').findById({_id: user_id}).cache()
+                const userModel = await this.lib.db.model('User').findById({_id: user_id}).populate('usertype').cache()
                 if(!userModel) next(this.transformResponse(res, false, 'ResourceNotFoundError', 'User not found'))
                 if(categories.length < 1) next(this.transformResponse(res, false, 'BadRequest', 'You must select at least one category'))
                 // confirm validity of categries
-                for (const category of categories){
-                    const id = mongoose.Types.ObjectId(category);
-                    const found = await this.lib.db.model('Category').findById({_id: id})
+
+                // TODO: validating client's parameters
+                // type cast string id to mongoose ObjectId
+                let categories = body.categories.reduce((acc, item) => {
+                    acc[item] = mongoose.Types.ObjectId(item);
+                    return acc
+                }, {})
+
+                for (const item in categories){
+                    const found = await this.lib.db.model('Category').findById({_id: categories[item]})
                     if(!found) return next(this.transformResponse(res, false, 'BadRequest', 'Invalid category'))
                 }
-                body.user = user._id;
-                let newProfile = this.lib.db.model('Profile')(body);
+                
+                body.categories = [...Object.keys(categories)];
+    
+                // for (const category of categories){
+                //     const id = mongoose.Types.ObjectId(category);
+                //     const found = await this.lib.db.model('Category').findById({_id: id})
+                //     if(!found) return next(this.transformResponse(res, false, 'BadRequest', 'Invalid category'))
+                // }
+                const userType = userModel.user_type.name.toUpperCase();
+                // let newProfile = this.lib.db.model('Profile')(body);
+                let newProfile;
+                switch(userType){
+                    case UNTAPPEDUSERTYPES.TALENT:
+                        let talent = new ProfileBuilder(userModel._id)
+                                        .createTalent(body.stage_name, body.physical_stats, body.experiences, body.skills)
+                                        .createBasicInfo(body.full_name, body.location, body.profile_picture, body.phone_numbers, body.short_bio)
+                                        .addSocialMedias(body.social_media)
+                                        .build();
+                        newProfile = this.lib.db.model('Talent')(talent);
+                    break;
+                    case UNTAPPEDUSERTYPES.PROFESSIONAL:
+                        let professional = new ProfileBuilder(userModel._id)
+                                                .createProfessional(body.company_name, body.banner_image, body.interests)
+                                                .addSocialMedias(body.social_media)
+                                                .build()
+                        newProfile = this.lib.db.model('Professional')(professional);
+                    break;
+                }
                 const profile = await newProfile.save();
                 const halObj = this.writeHAL(profile);
                 return this.transformResponse(res, true, halObj, 'Create operation successful');

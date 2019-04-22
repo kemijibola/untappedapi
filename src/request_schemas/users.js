@@ -11,14 +11,14 @@ module.exports = {
                 "password": {
                     "type": 'string'
                 },
-                "user_type_id": {
+                "user_type": {
                     "type": 'string'
                 },
                 "audience": {
                     "type": "string"
                 }
             },
-            "required": ['email', 'password', 'user_type_id', 'audience']
+            "required": ['email', 'password', 'user_type', 'audience']
         }
     },
     "PUT": {

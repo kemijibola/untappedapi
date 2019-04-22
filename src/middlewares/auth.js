@@ -27,8 +27,8 @@ async function validateToken(req, res, next) {
     if (parts.length !== 3){
         return _baseController.transformResponse(res, false, 'InvalidCredentials', 'You must log in!')
     }
+    
     // verifying the token is signed with valid key id
-
     // TODO: extend check to accomodate multiple keys, incase of future key rotation
     const header = JSON.parse(Buffer.from(parts[0], 'base64'));
     if(header.kid !== JWTOPTIONS.CURRENTKEY){

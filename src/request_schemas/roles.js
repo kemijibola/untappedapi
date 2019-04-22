@@ -9,9 +9,12 @@ module.exports = {
                 },
                 "user_type": {
                     "type": "string"
+                },
+                "role_type": {
+                    "type": "string"
                 }
             },
-            "required": ['name', 'user_type']
+            "required": ['name', 'user_type', "role_type"]
         }
     },
     "PUT": {

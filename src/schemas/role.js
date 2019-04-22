@@ -10,6 +10,10 @@ module.exports = {
             "type": "object",
             "description": "Type of user",
             "$ref": "UserType"
+        },
+        "role_type": {
+            "type": "string",
+            "description": "Role types e.g ['Basic', 'Free', 'Gold', 'Premium']"
         }
     }
 }
