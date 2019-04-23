@@ -6,8 +6,9 @@ class Roles extends BaseController {
     }
 
     async index(req, res, next) {
-        const roles = this.lib.db.model('Role').find();
-        this.writeHAL(res, roles);
+        const roles = await this.lib.db.model('Role').find();
+        const halObj = this.writeHAL(roles);
+        return this.transformResponse(res, true, halObj, 'Fetch operation successful');
     }
 
     async create(req, res, next){

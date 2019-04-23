@@ -29,7 +29,6 @@ async function validateToken(req, res, next) {
     if (parts.length !== 3){
         return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
-    
     // extra verification the token is signed with valid key id
     // TODO: extend check to accomodate multiple keys, incase of future key rotation
     const header = JSON.parse(Buffer.from(parts[0], 'base64'));
@@ -37,6 +36,7 @@ async function validateToken(req, res, next) {
         return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
     const { issuer, subject, audience } = req.params;
+    // TODO:: Handle parameters expected from client , subject, audience, issuer
     var verifyOptions = {
         issuer: issuer,
         subject: subject,
@@ -46,7 +46,6 @@ async function validateToken(req, res, next) {
     }
     try{
         req.user = await jwt.verify(encodedJWT, keys.rsa_public_key, verifyOptions)
-        console.log(req.user);
         next();
     }catch(err){
         return next(baseController.transformResponse(res, false, 'InvalidCredentials', err))

@@ -39,6 +39,7 @@ class BaseController {
     }
 
     writeHAL(obj){
+        console.log(obj);
         if(Array.isArray(obj)){
             let newArr = obj.map(item => {
                 if (typeof(item._id) === 'string'){
