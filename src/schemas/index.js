@@ -11,6 +11,7 @@ module.exports = {
         "Collection": require('./collection'),
         "Category": require('./category'),
         "Talent": require('./talent'),
-        "Professional": require('./professional')
+        "Professional": require('./professional'),
+        "Gig": require('./gig')
     }
 }

@@ -1,6 +1,6 @@
 const halson = require('halson');
 const ErrorHandler = require('../lib/errorHandler');
-const { ERRORCODES } = require('../lib/constants');
+const { ERROR_CODES } = require('../lib/constants');
 const mongoose = require('mongoose');
 const helpers = require('../lib/helpers');
 
@@ -11,8 +11,8 @@ class BaseController {
     transformResponse(res, status, data, message){
         if (!status){
             const error = new ErrorHandler(`Error of type ${data} found: ${ message}`);
-            if(ERRORCODES[data]){
-                return res.status(ERRORCODES[data]).json({
+            if(ERROR_CODES[data]){
+                return res.status(ERROR_CODES[data]).json({
                     status: status,
                     error: {
                         type: data,

@@ -10,5 +10,6 @@ module.exports = {
     ResourcePermissions: require('./resource-permissions'),
     Collections: require('./collections'),
     Profiles: require('./profiles'),
-    Categories: require('./categories')
+    Categories: require('./categories'),
+    Uploads: require('./uploads')
 }

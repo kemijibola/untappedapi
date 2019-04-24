@@ -8,6 +8,7 @@ module.exports = {
     "role-permissions": require('./role-permissions'),
     "resources": require('./resources'),
     "categories": require('./categories'),
-    "appointments": require('./appointments')
+    "appointments": require('./appointments'),
+    "uploads": require('./uploads')
     // "keys": require('./keys')
 }

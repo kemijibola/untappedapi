@@ -1,17 +1,14 @@
 module.exports = {
-    "GET": {
+    "POST": {
         "validate": 'body',
         "schema": {
             "type": "object",
             "properties": {
-               "operation_type": {
-                    "type": 'string'
-                },
-                "file_extension": {
-                    "type": "string"
+               "medias": {
+                    "type": 'array'
                 }
             },
-            "required": ['operation_type', 'file_extension']
+            "required": ['medias']
         }
     }
 }

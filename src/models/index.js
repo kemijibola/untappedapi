@@ -14,6 +14,7 @@ module.exports = function(db){
         "Permission": require('./permission')(db),
         "Resource": require('./resource')(db),
         "Talent": require('./talent')(db),
-        "Professional": require('./professional')(db)
+        "Professional": require('./professional')(db),
+        "Gig": require('./gig')(db)
     }
 }

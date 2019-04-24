@@ -1,5 +1,5 @@
 const BaseController = require('./baseController');
-const { JWTOPTIONS, ROLETYPES} = require('../lib/constants');
+const { JWT_OPTIONS, ROLE_TYPES} = require('../lib/constants');
 const ApiResponse = require('../models/response');
 const { authorizationService, emailService } = require('../services/index');
 const { sendMail } = require('../lib/helpers');
@@ -57,7 +57,7 @@ class Users extends BaseController {
                 // We assign default role for all new user by user types
                 criteria.$and = [
                     { user_type: userType._id },
-                    { role_type: ROLETYPES.FREE }
+                    { role_type: ROLE_TYPES.FREE }
                 ]
                 const roles = await this.lib.db.model('Role').find(criteria);
                 
@@ -92,10 +92,10 @@ class Users extends BaseController {
 
     async createUser(roles, body){
         let signOptions = {
-            issuer: JWTOPTIONS.ISSUER,
+            issuer: JWT_OPTIONS.ISSUER,
             subject: '',
             audience: body.audience,
-            expiresIn: JWTOPTIONS.EXPIRESIN,
+            expiresIn: JWT_OPTIONS.EXPIRESIN,
             algorithm: keys.rsa_type,
             keyid: keys.rsa_kid
         }
@@ -107,7 +107,7 @@ class Users extends BaseController {
         const payload = {
             permissions: []
         };
-        const privateKey = keys.rsa_private[JWTOPTIONS.CURRENTKEY].replace(/\\n/g, '\n');
+        const privateKey = keys.rsa_private[JWT_OPTIONS.CURRENTKEY].replace(/\\n/g, '\n');
 
         // saving new user to database
         let newUser = await this.lib.db.model('User')(userObj);
@@ -120,26 +120,6 @@ class Users extends BaseController {
         const token = await user.generateAuthToken(privateKey, signOptions, payload);
         await user.addRoles(user._id, roles);
         return { token: token };
-    }
-
-    async getCurrentApiKey(){
-        // production implementation store private key in (AWS)
-
-        let params = {
-            Bucket: 'jether-tech-credentials',
-            Key: 'web-app/secretKeys.json'
-        }
-        s3.getObject(params, function(err, data) {
-            if (err) {
-                console.log('error',err);
-            } else {
-                data = JSON.parse(data.Body.toString());
-                for (i in data) {
-                    console.log('Setting environment variable: ' + i);
-                    process.env[i] = data[i];
-                }
-            }
-        });
     }
 
     async sendWelcomePack(data){

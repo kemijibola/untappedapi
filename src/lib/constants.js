@@ -1,4 +1,4 @@
-const ERRORCODES = {
+const ERROR_CODES = {
     BadDigest: 400,
     BadMethod: 405,
     ConnectTimeout: 408,
@@ -19,33 +19,35 @@ const ERRORCODES = {
     WrongAccept: 406,
     DuplicateRecord: 400
 }
-const UNTAPPEDUSERTYPES = {
+const UNTAPPED_USER_TYPES = {
     TALENT: 'TALENT',
     AUDIENCE: 'AUDIENCE',
     PROFESSIONAL: 'PROFESSIONAL'
 }
 
-const JWTOPTIONS = {
+const JWT_OPTIONS = {
     ISSUER: 'http://127.0.0.1:9000',
     EXPIRESIN: '12h',
     CURRENTKEY: '42'
 }
 
-const UPLOADOPTIONS = {
+const COLLECTION_UPLOAD_TYPE = {
     SINGLE: 'SINGLE',
     MULTIPLE: 'MULTIPLE'
 }
 
-const UPLOADOPERATIONS = {
-    VIDEO: 'VIDEOS',
-    IMAGE: 'IMAGES',
-    AUDIO: 'AUDIOS'
+const ACCEPTED_MEDIA_TYPES = {
+    png: 'IMAGES',
+    jpg: 'IMAGES',
+    MP4: 'VIDEOS',
+    MP3: 'AUDIOS'
 }
+const UPLOAD
 
-const ROLETYPES = {
+const ROLE_TYPES = {
     FREE: 'FREE',
     BASIC: 'BASIC',
     GOLD: 'GOLD',
     PREMIUM: 'PREMIUM'
 }
-module.exports = Object.assign({}, { ERRORCODES, UNTAPPEDUSERTYPES, JWTOPTIONS, UPLOADOPTIONS, UPLOADOPERATIONS, ROLETYPES })
+module.exports = Object.assign({}, { ERROR_CODES, UNTAPPED_USER_TYPES, JWT_OPTIONS, COLLECTION_UPLOAD_TYPE, ACCEPTED_MEDIA_TYPES, ROLE_TYPES })

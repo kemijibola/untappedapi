@@ -2,7 +2,7 @@ const BaseController = require('./baseController');
 const AWS = require('aws-sdk');
 const uuid = require('uuid/v1');
 const keys = require('../config/keys');
-const { UPLOADOPERATIONS } = require('../lib/constants')
+const { ACCEPTED_MEDIA_TYPES } = require('../lib/constants')
 
 const s3 = new AWS.S3({
     accessKeyId: keys.accessKeyId,
@@ -14,49 +14,53 @@ class Uploads extends BaseController {
         super();
         this.lib = lib;
     }
-
     // saving medias to aws s3
     // rules ::
     // 1. Only signedin user can upload any media type 
-    // 2. Tie uploaded media to the collection that's being created
-    // 3. check extension for sent media type... e.g Image{'.png, .jpg, .gif'}, Videos { '.mp4, .mov, '.'}
-    // 4. req must include options type e.g VIDEO,AUDIO,USERPROFILE,IMAGE
+    // 2. check extension for sent media type... e.g Image{'.png, .jpg, .gif'}, Videos { '.mp4, .mov, '.'}
     async index(req, res, next) {
-        const { operation_type, file_extension } = req.body;
-        
-        if(!operation_type && !file_extension) return next(this.transformResponse(res, false, 'InvalidContent', 'Missing json content'))
-        const acceptedFileExtensions = /\.(jpg|jpeg|png|mp4|mov|mp3)$/i
-        file_extension = file_extension.trim().toLowerCase()
-        if(!acceptedFileExtensions.test(file_extension)){
-            return next(this.transformResponse(res, false, 'BadRequest', 'Invalid file'))
+        const { operation, medias } = req.body;
+        if(!medias) return next(this.transformResponse(res, false, 'InvalidContent', 'Missing json content'))
+        //const acceptedFileExtensions = /\.(jpg|jpeg|png|mp4|mov|mp3)$/i
+
+        // TODO:: we can restrict the number of media a user can upload based on their assigned role/priviledge
+
+        try {
+        // This is generating key for the medias sent
+        const mediasMap = medias.reduce( (theMap, media) => {
+            const [rawFilename, fileExtension] = media.split('.')
+            theMap[media] = `${req.user.sub}/${ACCEPTED_MEDIA_TYPES[fileExtension]}/${uuid()}.${fileExtension}`
+            return theMap;
+        }, {});
+
+        // validating we are working with aceptable file extension
+        for (let item in mediasMap) {
+            const [file, extention] = item.split('.');
+            if(!ACCEPTED_MEDIA_TYPES[extention]){
+                return next(this.transformResponse(res, false, 'InvalidContent', 'Invalid file.'))
+            }
         }
-        // This is for the purpose of folder management on the storage platform
-        const operation = operation_type.trim().toUpperCase();
-        let key;
-        switch(operation){
-            case UPLOADOPERATIONS.AUDIO:
-                key = `${req.user.id}/${UPLOADOPERATIONS.AUDIO}/${uuid()}.${file_extension}`
-            break;
-            case UPLOADOPERATIONS.VIDEO:
-                key = `${req.user.id}/${UPLOADOPERATIONS.VIDEO}/${uuid()}.${file_extension}`
-            break;
-            case UPLOADOPERATIONS.IMAGE:
-                key = `${req.user.id}/${UPLOADOPERATIONS.IMAGE}/${uuid()}.${file_extension}`
-            break;
-            default:
-                next(this.transformResponse(res, false, 'BadRequest', 'Unknown operation'))
-            break;
+        // Generating signed url from s3
+        let signedUrls = {};
+        for (let item in mediasMap){
+            s3.getSignedUrl('putObject', {
+                Bucket: keys.Bucket,
+                ContentType,
+                Key: mediasMap[item],
+                ExpiresIn: 120,
+            }, (err, url) => {
+                if(err) return next(this.transformResponse(res, false, 'InternalServerError', err.message));
+                signedUrls = {
+                    key: item,
+                    url: url
+                }
+            })
         }
-        // handle request with params
-        s3.getSignedUrl('putObject', {
-            Bucket: keys.Bucket,
-            ContentType: `${operation}/${file_extension}`,
-            Key: key,
-            ExpiresIn: 120,
-        }, (err, url) => {
+        return this.transformResponse(res, true, signedUrls, 'data');
+
+        }catch(err){
             if(err) return next(this.transformResponse(res, false, 'InternalServerError', err.message));
-            return this.transformResponse(res, true, { key, url }, 'Request was successful');
-        })
+        }
     }
 }
 
