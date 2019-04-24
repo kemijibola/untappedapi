@@ -80,9 +80,9 @@ class Collections extends BaseController {
         if(body && id){
             try{
                 // check if collection with id exists
-                let collection = await this.lib.db.model('Collection').findOne({_id: id});
-                if(!collection) return next(this.transformResponse(res, false, 'ResourceNotFoundError', 'Collection not found'))
-                collection = Object.assign(collection, body)
+                let collectionModel = await this.lib.db.model('Collection').findOne({_id: id});
+                if(!collectionModel) return next(this.transformResponse(res, false, 'ResourceNotFoundError', 'Collection not found'))
+                collectionModel = Object.assign(collection, body)
                 const updateObj = await collection.save();
                 const halObj = this.writeHAL(updateObj.toJSON());
                 return this.transformResponse(res, true, halObj, 'Update operation successful');

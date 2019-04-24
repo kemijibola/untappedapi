@@ -28,11 +28,13 @@ module.exports = {
         },
         "sender_deleted": {
             "type": "boolean",
-            "description": "This is set to true if the sender has deleted a gig"
+            "description": "This is set to true if the sender has deleted a gig",
+            "default": false
         },
         "reciever_deleted": {
             "type": "boolean",
-            "description": "This is set to true if the reciever has deleted a gig"
+            "description": "This is set to true if the reciever has deleted a gig",
+            "default": false
         }
     }
 }
