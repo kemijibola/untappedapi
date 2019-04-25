@@ -14,6 +14,11 @@ class Users extends BaseController {
         this.lib = lib;
     }
 
+    async index(req, res, next){
+        const users = await this.lib.db.model('User').find()
+        const halObj = this.writeHAL(users);
+        return this.transformResponse(res, true, halObj, 'Fetch operation successful');
+    }
     async signup(req, res, next){
         const body = req.body;
         if(body){

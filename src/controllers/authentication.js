@@ -36,7 +36,7 @@ class Authentication extends BaseController {
                         //const permissions = await this.getRolePermissions(user.roles)
                         // generate token
                         const signOptions = {
-                            issuer: JWT_OPTIONS.ISSUER,
+                            issuer: `${JWT_OPTIONS.ISSUER}${req.originalUrl}`,
                             audience: '1234',
                             keyid: JWT_OPTIONS.KEYID,
                             algorithm: JWT_OPTIONS.ALG

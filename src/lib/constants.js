@@ -45,7 +45,7 @@ const ACCEPTED_MEDIA_TYPES = {
     MP3: 'AUDIOS'
 }
 const JWT_OPTIONS = {
-    ISSUER: 'http://127.0.0.1:9000',
+    ISSUER: 'http://untappedpool.com',
     EXPIRESIN: '12h',
     ALG: keys.rsa_type,
     KEYID: keys.rsa_kid

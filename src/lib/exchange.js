@@ -2,6 +2,8 @@ module.exports = {
     tokenExchange: exchangeToken
 }
 
+// exchangeToken get the permission assigned to role for a particular resource
+// permissions are processed in place
 async function exchangeToken(lib, roles, destination){
     destination = '/categories';
     const url = await lib.db.model('Resource').findOne({name: destination})

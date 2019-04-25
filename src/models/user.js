@@ -45,7 +45,6 @@ module.exports = function(db){
         /*  extra data to be sent back to user is an object = { scopes: [], user_type: ''}
         **   and any extra information the system might need
         */
-       
         signOptions.subject = this._id.toString();
         return await jwt.sign(payload, privateKey, signOptions);
     }
