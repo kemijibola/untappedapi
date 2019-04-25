@@ -56,7 +56,7 @@ async function validateToken(req, res, next) {
         // otherwise, return decoded 
         if(destinationResourceUrl === decoded.iss){
             req.user = decoded
-            return next(req)
+            return next()
         }
         const roles = Object.keys(decoded.permissions);
         const permissions = await tokenExchange(lib, roles, req.originalUrl)
