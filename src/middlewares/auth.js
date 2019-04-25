@@ -1,9 +1,9 @@
 const { JWTOPTIONS } = require('../lib/constants');
 const jwt = require('jsonwebtoken');
-const config = require('config');
 const BaseController = require('../controllers/baseController');
 const baseController = new BaseController();
 const keys = require('../config/settings');
+const lib = require('../lib')
 
 module.exports = {
     requireLogin: validateToken,
@@ -11,6 +11,7 @@ module.exports = {
 }
 
 async function validateToken(req, res, next) {
+    
     // const { token, options } = req.params
     /** options = {
      *  issuer: "Authorizing server. This server",

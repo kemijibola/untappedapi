@@ -4,6 +4,7 @@
 const BaseController = require('./baseController');
 const keys = require('../config/settings')
 const { JWT_OPTIONS } = require('../lib/constants')
+const { tokenExchange } = require('../lib/exchange');
 
 class Authentication extends BaseController {
     constructor(lib){
@@ -31,7 +32,8 @@ class Authentication extends BaseController {
                         const toUrl = req.originalUrl;
                         // get scopes by user role of user
                         // const permissions = await getRolePermissions(user.roles);
-                        const permissions = await this.getRolePermissions(user.roles)
+                        const permissions = await tokenExchange(this.lib, user.roles, req.originalUrl)
+                        //const permissions = await this.getRolePermissions(user.roles)
                         // generate token
                         const signOptions = {
                             issuer: JWT_OPTIONS.ISSUER,
@@ -63,13 +65,6 @@ class Authentication extends BaseController {
 
     }
 
-    async getRolePermissions(roles){
-        let scopes = await roles.reduce(async (scopeMap, theRole, index) => {
-            scopeMap[theRole] = await this.lib.db.model('RolePermission').find({ role: theRole }, 'resourcePermission')
-            return scopeMap
-        }, {})
-        return scopes;
-    }
 }
 
 module.exports = Authentication
