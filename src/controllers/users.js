@@ -13,31 +13,6 @@ class Users extends BaseController {
         super();
         this.lib = lib;
     }
-    async login(req, res, next){
-
-        /* In login implementation, use audience and user roles to send back scopes(permissions) of the user
-        **   For example: ClientApp1 is an audience, send back roles needed for clientApp1
-        */ 
-        let body = req.body;
-        if (body){
-            if (!body.email || !body.password) { next(this.Error('InvalidContent', 'Provide email and password.')); }
-            const user = await this.lib.model('User').findOne({email: body.email.toLowerCase()})
-            if (!user) { next(this.Error('InvalidCredentials', 'Invalid credentials.')) }
-            user.comparePassword(body.password, async (err,isMatch) => {
-                if(err) {
-                    next(this.Error('InvalidCredentials', 'Invalid credentials'))}
-                if(isMatch){
-                    // get scopes by user role of user
-                    const scopes = await authorizationService(user.roles);
-                    // generate token
-                    const token = await user.generateAuthToken();
-                    // send back API Response to user
-                    this.writeHAL(res, new ApiResponse(user, token, scopes));
-                }else {
-                    this.Error('InvalidCredentials', 'Invalid credentials')}});
-        }else{
-            next(this.Error('InvalidContent', 'Missing json data'));}
-    }
 
     async signup(req, res, next){
         const body = req.body;

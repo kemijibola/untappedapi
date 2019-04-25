@@ -22,11 +22,10 @@ class RolePermissions extends BaseController {
                 // check :: a role can be configured for a route
                 criteria.$and = [
                     { role: body.role },
-                    { resource_permission: body.resource_permission }
+                    { resourcePermission: body.resourcePermission }
                 ]
                 let rolePermissionModel = await this.lib.db.model('RolePermission').findOne(criteria)
-                console.log(rolePermissionModel);
-                if(rolePermissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role id: ${rolePermissionModel.role} has been configured for route: ${rolePermissionModel.resource_permission}.`))
+                if(rolePermissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Role id: ${rolePermissionModel.role} has been configured for route: ${rolePermissionModel.resourcePermission}.`))
                 rolePermissionModel = this.lib.db.model('RolePermission')(body);
                 const rolePermission = await rolePermissionModel.save();
                 // if (rolePermission && typeof rolePermission.log === 'function'){

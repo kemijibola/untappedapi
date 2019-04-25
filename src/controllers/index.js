@@ -11,5 +11,6 @@ module.exports = {
     Collections: require('./collections'),
     Profiles: require('./profiles'),
     Categories: require('./categories'),
-    Uploads: require('./uploads')
+    Uploads: require('./uploads'),
+    Authentication: require('./authentication')
 }

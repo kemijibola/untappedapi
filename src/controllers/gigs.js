@@ -72,8 +72,23 @@ class Gigs extends BaseController {
         const body = req.body
         if(body && id){
             try{
-                let gigModel = await this.lib.db.model('Gig').findById({_id: id})
-
+                let criteria = {}
+                let sender = req.body.sender ? req.body.sender.trim() : ''
+                let reciever = req.body.reciever ? req.body.reciever.trim() : ''
+                if (sender === reciever){
+                    next(this.transformResponse(res, false, 'BadRequest', 'Invalid params'))
+                }
+                if (sender){
+                    criteria.sender = sender
+                }
+                if(reciever){
+                    criteria.reciever = reciever
+                }
+                criteria.$and = [
+                    { _id: id },
+                    { criteria: criteria }
+                ]
+                let gigModel = await this.lib.db.model('Gig').findById(criteria)
                 // Only allow user to update reciever_deleted and sender_deleted
                 body.sender = gigModel.sender
                 body.reciever = gigModel.reciever

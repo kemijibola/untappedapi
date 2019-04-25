@@ -10,5 +10,6 @@ module.exports = (lib, app) => {
     require('./resource-permissions')(lib,app),
     require('./collections')(lib,app),
     require('./applications')(lib,app),
-    require('./uploads')(lib,app)
+    require('./uploads')(lib,app),
+    require('./authentication')(lib,app)
 }

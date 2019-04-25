@@ -1,3 +1,5 @@
+const keys = require('../config/settings')
+
 const ERROR_CODES = {
     BadDigest: 400,
     BadMethod: 405,
@@ -25,11 +27,11 @@ const UNTAPPED_USER_TYPES = {
     PROFESSIONAL: 'PROFESSIONAL'
 }
 
-const JWT_OPTIONS = {
-    ISSUER: 'http://127.0.0.1:9000',
-    EXPIRESIN: '12h',
-    CURRENTKEY: '42'
-}
+// const JWT_OPTIONS = {
+//     ISSUER: 'http://127.0.0.1:9000',
+//     EXPIRESIN: '12h',
+//     CURRENTKEY: '42'
+// }
 
 const COLLECTION_UPLOAD_TYPE = {
     SINGLE: 'SINGLE',
@@ -41,6 +43,12 @@ const ACCEPTED_MEDIA_TYPES = {
     jpg: 'IMAGES',
     MP4: 'VIDEOS',
     MP3: 'AUDIOS'
+}
+const JWT_OPTIONS = {
+    ISSUER: 'http://127.0.0.1:9000',
+    EXPIRESIN: '12h',
+    ALG: keys.rsa_type,
+    KEYID: keys.rsa_kid
 }
 const UPLOAD_OPERATION_TYPE = {
     GIGUPLOAD: 'GIGUPLOAD',
@@ -54,6 +62,8 @@ const ROLE_TYPES = {
     GOLD: 'GOLD',
     PREMIUM: 'PREMIUM'
 }
+
+
 module.exports = Object.assign({}, { 
     ERROR_CODES, 
     UNTAPPED_USER_TYPES, 
