@@ -38,28 +38,28 @@ async function validateToken(req, res, next) {
     if(header.kid !== keys.rsa_kid){
         return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
-    // TODO:: Handle parameters expected from client audience
+    
     var verifyOptions = {
         issuer: payload.iss,
         subject: payload.sub,
-        audience: payload.audience,
+        audience: payload.aud,
         expiresIn: JWT_OPTIONS.EXPIRESIN,
         algorithm:  ["RS256"]
     }
     try{
-        
-        //const decoded = await jwt.verify(encodedJWT, keys.rsa_public_key, verifyOptions)
-        const decoded = await this.verifyToken(encodedJWT, keys.rsa_public_key, verifyOptions);
+        const decoded = await jwt.verify(encodedJWT, keys.rsa_public_key, verifyOptions)
         const destinationResourceUrl = `${JWT_OPTIONS.ISSUER}${req.originalUrl}`
-        // check if the destination url is different from payload.iss
-        // if it is different, get permissions for destination resource, sign another token to sign
-        // otherwise, return decoded 
+        
+        // this is a check to see if destinationUrl is the same as the current token issuer
+        // if it is, return decoded immediately
         if(destinationResourceUrl === decoded.iss){
             req.user = decoded
             return next()
         }
-        const roles = Object.keys(decoded.permissions);
-        const permissions = await tokenExchange(lib, roles, req.originalUrl)
+        // otherwise, get the user roles
+        const userModel = await lib.db.model('User').findById({_id: decoded.sub});
+        // get persmissions for the roles assigned to the user
+        const permissions = await tokenExchange(lib, userModel.roles, req.originalUrl)
         // generate new token and send it to client with response.headers('Authorization')
         // set req.user = decoded
         const payload = {
@@ -68,16 +68,18 @@ async function validateToken(req, res, next) {
         
         const signOptions = {
             issuer: `${JWT_OPTIONS.ISSUER}${req.originalUrl}`,
-            audience: '1234',
+            audience: payload.aud,
             keyid: JWT_OPTIONS.KEYID,
             algorithm: JWT_OPTIONS.ALG
         }
-        const userModel = await lib.db.model('User').findById({_id: decoded.sub});
+        // generate a new token for user
         const token = await userModel.generateAuthToken(keys.rsa_private[JWT_OPTIONS.KEYID], signOptions, payload);
+        // set response header
         res.setHeader('authorization', token)
+        // set payload for the user object
         req.user = {
             permissions: permissions,
-            sub: decoded.sub
+            sub: userModel._id
         }
         return next()
         
@@ -87,10 +89,3 @@ async function validateToken(req, res, next) {
 
 }
 
- verifyToken = async (encodedJWT, key, options) => {
-    try{
-        return await jwt.verify(encodedJWT, key, options)
-    }catch(err){
-        return next(baseController.transformResponse(res, false, 'InvalidCredentials', err))
-    }
-}

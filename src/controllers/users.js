@@ -15,10 +15,30 @@ class Users extends BaseController {
     }
 
     async index(req, res, next){
-        const users = await this.lib.db.model('User').find()
-        const halObj = this.writeHAL(users);
-        return this.transformResponse(res, true, halObj, 'Fetch operation successful');
+        try{
+            const users = await this.lib.db.model('User').find()
+            const halObj = this.writeHAL(users)
+            return this.transformResponse(res, true, halObj, 'Fetch operation successful')
+        }catch(err){
+            next(res, this.transformResponse(res,false, 'InternalServerError', err.message))
+        }
     }
+
+    async details(req, res, next){
+        const id = req.params.id
+        if(id){
+            try{
+                const user = await this.lib.db.model('User').findById({_id: id})
+                const halObj = this.writeHAL(user)
+                return this.transformResponse(res, true, halObj, 'Fetch operation successful')
+            }catch(err){
+
+            }
+        }else{
+            next(res, this.transformResponse(res,false, 'InvalidArgument', 'Invalid id'))
+        }
+    }
+    
     async signup(req, res, next){
         const body = req.body;
         if(body){
@@ -42,7 +62,8 @@ class Users extends BaseController {
                 const roles = await this.lib.db.model('Role').find(criteria);
                 
                 const newUser = await this.createUser(roles, body);
-                // send WelcomePack Mail based on type of user
+                // TODO:: before sending back response to client,
+                // send welcome pack email based on type of user
 
                 const halObj = this.writeHAL(newUser);
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
@@ -85,7 +106,7 @@ class Users extends BaseController {
             user_type: body.user_type
         }
         const payload = {
-            permissions: []
+            permissions: {}
         };
         const privateKey = keys.rsa_private[JWT_OPTIONS.CURRENTKEY].replace(/\\n/g, '\n');
 

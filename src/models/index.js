@@ -15,6 +15,8 @@ module.exports = function(db){
         "Resource": require('./resource')(db),
         "Talent": require('./talent')(db),
         "Professional": require('./professional')(db),
-        "Gig": require('./gig')(db)
+        "Gig": require('./gig')(db),
+        "PrizeType": require('./prize-type')(db),
+        "Contest": require('./contest')(db)
     }
 }

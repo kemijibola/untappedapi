@@ -12,6 +12,8 @@ module.exports = {
         "Category": require('./category'),
         "Talent": require('./talent'),
         "Professional": require('./professional'),
-        "Gig": require('./gig')
+        "Gig": require('./gig'),
+        "PrizeType": require('./prize-type'),
+        "Contest": require('./contest')
     }
 }

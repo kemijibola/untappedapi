@@ -28,13 +28,13 @@ class Authentication extends BaseController {
                     if(err) {
                         next(this.transformResponse(res, false,'InvalidCredentials', 'Invalid credentials'))}
                     if(isMatch){
-                        // get req.originalUrl, use url to get roles to be sent back to user
-                        const toUrl = req.originalUrl;
+                        // TODO: Do a check to confirm the audience sent by a client is a valid audience 
+                        // that can access resource
+
                         // get scopes by user role of user
                         // const permissions = await getRolePermissions(user.roles);
                         const permissions = await tokenExchange(this.lib, user.roles, req.originalUrl)
-                        //const permissions = await this.getRolePermissions(user.roles)
-                        // generate token
+                        
                         const signOptions = {
                             issuer: `${JWT_OPTIONS.ISSUER}${req.originalUrl}`,
                             audience: '1234',
@@ -46,8 +46,8 @@ class Authentication extends BaseController {
                         }
                         const privateKey = keys.rsa_private[JWT_OPTIONS.KEYID].replace(/\\n/g, '\n');
                         const token = await user.generateAuthToken(privateKey, signOptions, payload);
-                        // console.log(token);
-                        // send back API Response to user
+
+                        // send back token
                         const halObj = this.writeHAL(token)
                         return this.transformResponse(res, true, halObj, 'Login successful')
                     }else {
