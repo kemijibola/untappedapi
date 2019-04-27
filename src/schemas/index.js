@@ -5,7 +5,6 @@ module.exports = {
         "User": require('./user'),
         "Role": require('./role'),
         "Permission": require('./permission'),
-        "ResourcePermission": require('./resource-permission'),
         "RolePermission": require('./role-permission'),
         "Resource": require('./resource'),
         "Collection": require('./collection'),
