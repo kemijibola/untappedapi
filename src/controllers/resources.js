@@ -15,8 +15,8 @@ class Resources extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const resourceModel = await this.lib.db.model('Resource').findOne({ name: body.name });
-                if(resourceModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Resource with name ${ resourceExist.name } exists.`))
+                let resourceModel = await this.lib.db.model('Resource').findOne({ name: body.name });
+                if(resourceModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Resource with name ${ resourceModel.name } exists.`))
                 body.name = body.name.toLowerCase();
                 resourceModel = this.lib.db.model('Resource')(body);
                 const resource = await resourceModel.save();

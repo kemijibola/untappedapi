@@ -13,7 +13,7 @@ module.exports = {
         },
         "role_type": {
             "type": "string",
-            "description": "Role types e.g ['Basic', 'Free', 'Gold', 'Premium']"
+            "description": "Role types e.g ['Paid', 'Free']"
         }
     }
 }

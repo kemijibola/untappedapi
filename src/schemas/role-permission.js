@@ -6,10 +6,17 @@ module.exports = {
             "description": "Role",
             "$ref": "Role"
         },
-        "resourcePermission": {
+        "permissions": {
+            "type": "array",
+            "description": "List of all permissions that can be performed by this this role",
+            "items": {
+                "$ref": "Permission"
+            }
+        },
+        "resource": {
             "type": "object",
-            "description": "Resource permission configured",
-            "$ref": "ResourcePermission"
+            "description": "Resource being configured for role",
+            "$ref": "Resource"
         }
     }
 }

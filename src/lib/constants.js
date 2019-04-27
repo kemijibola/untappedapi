@@ -58,9 +58,7 @@ const UPLOAD_OPERATION_TYPE = {
 
 const ROLE_TYPES = {
     FREE: 'FREE',
-    BASIC: 'BASIC',
-    GOLD: 'GOLD',
-    PREMIUM: 'PREMIUM'
+    PAID: 'PAID'
 }
 
 

@@ -11,7 +11,7 @@ module.exports = {
                     "type": 'array'
                 }
             },
-            "required": ['role_id', 'permissions']
+            "required": ['resource', 'permissions']
         }
     },
     "PUT": {

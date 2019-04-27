@@ -24,7 +24,7 @@ class Uploads extends BaseController {
         //const acceptedFileExtensions = /\.(jpg|jpeg|png|mp4|mov|mp3)$/i
 
         // TODO:: we can restrict the number of media a user can upload based on their assigned role/priviledge
-        // The type of operation is used to determing the the number of items user can upload with their role
+        // The type of operation is used to determine the the number of items user can upload
         // type of operaions includes option in contants.UPLOAD_OPERATION_TYPE
 
         try {

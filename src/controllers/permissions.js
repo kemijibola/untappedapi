@@ -15,8 +15,8 @@ class Permissions extends BaseController {
         const body = req.body;
         if(body){
             try{
-                const permissionModel = await this.lib.db.model('Permission').findOne({name: body.name});
-                if(permissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Permission with name ${permissionExist.name} exists.`))
+                let permissionModel = await this.lib.db.model('Permission').findOne({name: body.name});
+                if(permissionModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Permission with name ${permissionModel.name} exists.`))
                 permissionModel = this.lib.db.model('Permission')(body);
                 const permission = await permissionModel.save();
                 if (permission && typeof permission.log === 'function'){
