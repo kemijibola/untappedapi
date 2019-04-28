@@ -15,27 +15,39 @@ class Resources extends BaseController {
         const body = req.body;
         if(body){
             try{
-                let resourceModel = await this.lib.db.model('Resource').findOne({ name: body.name });
-                if(resourceModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `Resource with name ${ resourceModel.name } exists.`))
-                body.name = body.name.toLowerCase();
-                resourceModel = this.lib.db.model('Resource')(body);
-                const resource = await resourceModel.save();
-                if (resource && typeof resource.log === 'function'){
-                    const data = {
-                        action: `create-resource of ${resource._id}`, // should capture action id for tracking e.g userType._id
-                        category: 'resource',
-                        // createdBy: req.user.id,
-                        createdBy: 'test user',
-                        message: 'Created resource'
-                    }
-                    resource.log(data);
+                // TODO: validating client's parameters
+                // type cast string id to mongoose ObjectId
+                let permissions = body.permissions.reduce((acc, item) => {
+                    acc[item] = mongoose.Types.ObjectId(item);
+                    return acc
+                }, {})
+                body.permissions = [...Object.keys(permissions)];
+                // this is checking if the resource has been configured, if not, it creates the object ,otherwise,
+                // it adds to the existing collection by merging existing permissions with incoming permissions
+                // and saves to database
+                let resourceModel = await this.lib.db.model('Resource').findOne({resource: body.name})
+                if (!resourceModel){
+                    resourceModel = this.lib.db.model('Resource')(body);
+                }else {
+                    resourceModel.permissions = this.lib.helpers.mergeLists(resourceModel.permissions, body.permissions)
                 }
-                const halObj = this.writeHAL(resource);
+                const resource = await resourceModel.save()
+                // if (resource && typeof resource.log === 'function'){
+                //     const data = {
+                //         action: `create-resource of ${resource._id}`, // should capture action id for tracking e.g permission._id
+                //         category: 'resource',
+                //         // createdBy: req.user.id,
+                //         createdBy: 'test user',
+                //         message: 'Created resource'
+                //     }
+                //     resource.log(data);
+                // }
+                const halObj = this.writeHAL(resource)
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
                 next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
-        }else {
+        }else{
             next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
         }
     }

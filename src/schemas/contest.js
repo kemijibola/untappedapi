@@ -12,6 +12,10 @@ module.exports = {
             "type": "string",
             "description": ""
         },
+        "created_by": {
+            "type": "object",
+            "$ref": "User"
+        },
         "information": {
             "type": "string",
             "description": ""

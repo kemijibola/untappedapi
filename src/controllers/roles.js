@@ -11,6 +11,20 @@ class Roles extends BaseController {
         return this.transformResponse(res, true, halObj, 'Fetch operation successful');
     }
 
+    mergePermissions(list1, list2){
+        let permissionMap1 = list1.reduce((theMap, theItem) => {
+            if(theItem) theMap[theItem] = theItem
+            return theMap;
+        },{})
+        let permissionMap2 = list2.reduce((theMap, theItem) => {
+            if(theItem) theMap[theItem] = theItem
+            return theMap;
+        },{})
+
+        let permissions = Object.assign(permissionMap1, permissionMap2)
+        return Object.keys(permissions)
+    }
+    
     async create(req, res, next){
         const body = req.body;
         if(body){

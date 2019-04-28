@@ -1,7 +1,8 @@
 const halson = require('halson');
 
 module.exports = {
-    makeHAL: makeHAL
+    makeHAL: makeHAL,
+    mergeLists: mergeLists
 }
 
 function makeHAL(data, links, embed){
@@ -20,4 +21,18 @@ function makeHAL(data, links, embed){
         });
     }
     return obj;
+}
+
+function mergeLists(list1, list2){
+    let listMap1 = list1.reduce((theMap, theItem) => {
+        if(theItem) theMap[theItem] = theItem
+        return theMap;
+    },{})
+    let listMap2 = list2.reduce((theMap, theItem) => {
+        if(theItem) theMap[theItem] = theItem
+        return theMap;
+    },{})
+
+    let merged = Object.assign(listMap1, listMap2)
+    return Object.keys(merged)
 }
