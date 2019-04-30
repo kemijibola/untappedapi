@@ -65,7 +65,7 @@ module.exports = {
         },
         "status": {
             "type": "string",
-            "description": "Status of the contest. e.g Created,Paid,Completed"
+            "description": "Status of the contest. e.g Active,Completed"
         }
     }
 }

@@ -52,11 +52,6 @@ module.exports = {
                 "type": "mixed"
             }
         },
-        // "user_type": {
-        //     "type": "object",
-        //     "description": "Type of user. e.g ['Talent', 'Professional', 'Audience']",
-        //     "$ref": "UserType"
-        // },
         "roles": {
             "type": "array",
             "description": "List of user roles",
