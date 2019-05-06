@@ -9,6 +9,7 @@ module.exports = {
     "categories": require('./categories'),
     "appointments": require('./appointments'),
     "uploads": require('./uploads'),
-    "authentication": require('./authentication')
+    "authentication": require('./authentication'),
+    "contests": require('./contests')
     // "keys": require('./keys')
 }

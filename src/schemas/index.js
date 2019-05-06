@@ -13,6 +13,8 @@ module.exports = {
         "Professional": require('./professional'),
         "Gig": require('./gig'),
         "PrizeType": require('./prize-type'),
-        "Contest": require('./contest')
+        "Contest": require('./contest'),
+        "ContestEntry": require('./contest-entry'),
+        "EntryPoint": require('./entry-point')
     }
 }

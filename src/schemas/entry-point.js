@@ -1,5 +1,5 @@
 module.exports = {
-    "id": "ContestPoint",
+    "id": "EntryPoint",
     "properties": {
         "entry": {
             "type": "object",
@@ -8,7 +8,7 @@ module.exports = {
         },
         "vote_channel": {
             "type": "string",
-            "description": "The channel the vote was cast. e.g ONLINE,SMS, PAYSTACK"
+            "description": "The channel the vote was cast. e.g ONLINE, SMS, PAYSTACK"
         },
         "point": {
             "type": "number",

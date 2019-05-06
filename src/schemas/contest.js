@@ -1,12 +1,5 @@
 module.exports = {
     "id": "Contest",
-    "definitions": {
-        "schemaArray": {
-            "type": "array",
-            "minItems": 1,
-            "items": { "$ref": "#" }
-        }
-    },
     "properties": {
         "title": {
             "type": "string",
