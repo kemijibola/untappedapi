@@ -9,6 +9,9 @@ module.exports = {
                 },
                 "global": {
                     "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
                 }
             },
             "required": ['name', 'global']

@@ -1,6 +1,6 @@
 const tv4 = require('tv4');
 const formats = require('tv4-formats');
-const schemas = require('../request_schemas/')
+const schemas = require('../request_schemas')
 
 module.exports = {
     validateRequest: validate

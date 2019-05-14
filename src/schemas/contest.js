@@ -42,7 +42,7 @@ module.exports = {
             "description": "Number of days the contest will run for"
         },
         "selection_type": {
-            "type": "mixed",
+            "type": "Mixed",
             "description": "Contest final selection type. i.e Online / Online & Offline. Using mixed to save additional properties for Online & offline selection"
         },
         "evaluators": {
