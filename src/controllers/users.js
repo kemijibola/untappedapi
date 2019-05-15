@@ -24,21 +24,39 @@ class Users extends BaseController {
         }
     }
 
+    /**
+     * Details is a get request that fetches a user by _id or email
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} next 
+     */
     async details(req, res, next){
-        const id = req.params.id
-        if(id){
+        let criteria = {};
+        let id;
+        if(req.params.query) {
+            let query = req.params.query
+            // /^[a-fA-F0-9]{24}$/
+            let isMongoId = new RegExp("^[0-9a-fA-F]{24}$");
+            if(isMongoId.test(query)){
+                id = query
+                console.log(id)
+            }
+            criteria.$or = [
+                { _id: id },
+                { email: query }
+            ]
             try{
-                const user = await this.lib.db.model('User').findById({_id: id})
+                const user = await this.lib.db.model('User').find(criteria)
                 const halObj = this.writeHAL(user)
                 return this.transformResponse(res, true, halObj, 'Fetch operation successful')
             }catch(err){
-
+                next(this.transformResponse(res, false, 'InvalidContent', err.message));
             }
-        }else{
-            next(res, this.transformResponse(res,false, 'InvalidArgument', 'Invalid id'))
+        }else {
+            next(this.transformResponse(res, false, 'InvalidContent', 'Invalid parameter'));
         }
     }
-    
+
     async signup(req, res, next){
         const body = req.body;
         if(body){

@@ -6,7 +6,7 @@ class UserTypes extends BaseController {
     }
 
     async index(req, res, next) {
-        const roles = await this.lib.db.model('UserType').find().cache();
+        const roles = await this.lib.db.model('UserType').find({ global: true });
         const halObj = this.writeHAL(roles);
         return this.transformResponse(res, true, halObj, 'Fetch operation successful');
     }
