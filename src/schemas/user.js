@@ -6,6 +6,10 @@ module.exports = {
             "unique": true,
             "description": "Email address of user."
         },
+        "name": {
+            "type": "string",
+            "description": "The name of user"
+        },
         "password": {
             "type": "string",
             "description": "Password of user."
