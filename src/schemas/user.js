@@ -41,7 +41,7 @@ module.exports = {
         },
         "profile_visibility": {
             "type": "boolean",
-            "default": true,
+            "default": false,
             "description": "User profile visibility preference."
         },
         "login_count": {

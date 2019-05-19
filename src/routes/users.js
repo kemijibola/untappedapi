@@ -6,7 +6,7 @@ module.exports = (lib, app) => {
         new Users(lib).index(req, res, next)
     })
 
-    app.post('/users', async (req, res, next) => {
+    app.post('/signup', async (req, res, next) => {
         new Users(lib).signup(req, res, next)
     })
     app.get('/users/:query', async (req, res, next) => {

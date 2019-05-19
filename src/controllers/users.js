@@ -121,9 +121,9 @@ class Users extends BaseController {
             keyid: keys.rsa_kid
         }
         const userObj = {
+            name: body.name,
             email: body.email,
-            password: body.password,
-            user_type: body.user_type
+            password: body.password
         }
         const payload = {
             permissions: {}
