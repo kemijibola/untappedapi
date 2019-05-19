@@ -69,17 +69,19 @@ class Users extends BaseController {
 
                 // This is checking that the user_type sent by client is a valid type of user 
                 // in the database. For Example: Talent,Audience,Professional
-                const userType = await this.lib.db.model('UserType').findById({ _id: body.user_type })
-                if(!userType) return next(this.transformResponse(res, false, 'ResourceNotFound', `Could not determine user type of: ${ body.user_type }`))
+                const userTypeModel = await this.lib.db.model('UserType').findById({ _id: body.user_type })
+                if(!userTypeModel) return next(this.transformResponse(res, false, 'ResourceNotFound', `Could not determine user type of: ${ body.user_type }`))
                 
                 // We assign default role for all new user by user types
                 criteria.$and = [
-                    { user_type: userType._id },
+                    { user_type: userTypeModel._id },
                     { role_type: ROLE_TYPES.FREE }
                 ]
                 const roles = await this.lib.db.model('Role').find(criteria);
                 
                 const newUser = await this.createUser(roles, body);
+                console.log(newUser);
+                newUser.user_type = userTypeModel.name;
                 // TODO:: before sending back response to client,
                 // send welcome pack email based on type of user
 
@@ -126,7 +128,7 @@ class Users extends BaseController {
         const payload = {
             permissions: {}
         };
-        const privateKey = keys.rsa_private[JWT_OPTIONS.CURRENTKEY].replace(/\\n/g, '\n');
+        const privateKey = keys.rsa_private[JWT_OPTIONS.KEYID].replace(/\\n/g, '\n');
 
         // saving new user to database
         let newUser = await this.lib.db.model('User')(userObj);
@@ -138,7 +140,7 @@ class Users extends BaseController {
 
         const token = await user.generateAuthToken(privateKey, signOptions, payload);
         await user.addRoles(user._id, roles);
-        return { token: token };
+        return { token: token, user: user._id };
     }
 
     async sendWelcomePack(data){

@@ -2,7 +2,7 @@ const { Roles } = require('../controllers');
 const { requireLogin } = require('../middlewares/auth');
 
 module.exports = (lib, app) => {
-    app.get('/roles', requireLogin, async (req, res, next) => {
+    app.get('/roles', async (req, res, next) => {
         new Roles(lib).index(req, res, next)
     });
 
