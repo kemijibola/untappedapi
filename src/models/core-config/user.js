@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const jsonSelect  = require('mongoose-json-select');
-const helpers = require("../lib/helpers");
+const helpers = require("../../lib/helpers");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 const config = require('config');
 
 module.exports = function(db){
-    let schema = require('../schemas/user.js');
+    let schema = require('../../schemas/core-config/user');
     let modelDef = db.getModelFromSchema(schema);
 
     modelDef.schema.plugin(jsonSelect, '-roles');
@@ -41,7 +41,7 @@ module.exports = function(db){
           });
         });
     })
-    modelDef.schema.methods.generateAuthToken = async function(privateKey, signOptions, payload = {}){
+    modelDef.schema.methods.generateToken = async function(privateKey, signOptions, payload = {}){
         /*  extra data to be sent back to user is an object = { scopes: [], user_type: ''}
         **   and any extra information the system might need
         */

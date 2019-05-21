@@ -61,6 +61,15 @@ const ROLE_TYPES = {
     PAID: 'PAID'
 }
 
+const TOKEN_TYPES = {
+    MAIL: 'MAIL',
+    AUTH: 'AUTH'
+}
+
+const TEMPLATE_LINKS = {
+    TWITTER: 'http://twitter.com/untappedpool',
+    FACEBOOK: 'http://facebook.com/untappedpool'
+}
 
 module.exports = Object.assign({}, { 
     ERROR_CODES, 
@@ -69,5 +78,7 @@ module.exports = Object.assign({}, {
     COLLECTION_UPLOAD_TYPE, 
     ACCEPTED_MEDIA_TYPES, 
     ROLE_TYPES, 
-    UPLOAD_OPERATION_TYPE
+    UPLOAD_OPERATION_TYPE,
+    TOKEN_TYPES,
+    TEMPLATE_LINKS
  })

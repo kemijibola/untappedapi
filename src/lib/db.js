@@ -1,15 +1,15 @@
-const config = require('config');
 const _ = require('underscore');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const settings = require('../config/settings');
-
+// const settings = require('../config/settings');
+let modelStr;
 let obj = {
     getModelFromSchema: getModelFromSchema,
+    modelInUse: modelPath,
     model: function(mName){
         return this.models[mName];
     },
-    connect: function(callback){
+    connect: function(settings, callback){
         // mongoose.connect(process.env['database_host'] + "/" +process.env['database_name']);
         mongoose.connect(settings.database_host + "/" +settings.database_name);
         this.connection = mongoose.connection;
@@ -17,7 +17,13 @@ let obj = {
         this.connection.on('open', callback);
     }
 }
-obj.models = require('../models/')(obj);
+
+function modelPath(strPath){
+    return modelStr = strPath
+}
+
+obj.models = require('../models/core-config/')(obj);
+obj.models = require('../models/tenant-entities/')(obj);
 
 module.exports = obj;
 

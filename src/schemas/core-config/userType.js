@@ -12,6 +12,6 @@ module.exports = {
         "description": {
             "type": "string",
             "description": "Describes the type of user"
-        }
+        },
     }
 }

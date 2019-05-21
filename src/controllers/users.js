@@ -1,8 +1,9 @@
 const BaseController = require('./baseController');
-const { JWT_OPTIONS, ROLE_TYPES} = require('../lib/constants');
+const { JWT_OPTIONS, ROLE_TYPES, TOKEN_TYPES } = require('../lib/constants');
 const ApiResponse = require('../models/response');
 const { authorizationService, emailService } = require('../services/index');
 const { sendMail } = require('../lib/helpers');
+const { SignInOptions } = require('../models/custom/token-options');
 // const config = require('config');
 let keys = require('../config/settings');
 // var AWS = require('aws-sdk');
@@ -80,7 +81,6 @@ class Users extends BaseController {
                 const roles = await this.lib.db.model('Role').find(criteria);
                 
                 const newUser = await this.createUser(roles, body);
-                console.log(newUser);
                 newUser.user_type = userTypeModel.name;
                 // TODO:: before sending back response to client,
                 // send welcome pack email based on type of user
@@ -112,23 +112,29 @@ class Users extends BaseController {
     }
 
     async createUser(roles, body){
-        let signOptions = {
-            issuer: JWT_OPTIONS.ISSUER,
-            subject: '',
-            audience: body.audience,
-            expiresIn: JWT_OPTIONS.EXPIRESIN,
-            algorithm: keys.rsa_type,
-            keyid: keys.rsa_kid
-        }
+        
+        const signOptions = new SignInOptions(
+            {
+                issuer: JWT_OPTIONS.ISSUER,
+                subject: '',
+                type: TOKEN_TYPES.AUTH,
+                audience: body.audience,
+                expiresIn: JWT_OPTIONS.EXPIRESIN,
+                algorithm: keys.rsa_type,
+                keyid: keys.rsa_kid
+            }
+        );
         const userObj = {
             name: body.name,
             email: body.email,
             password: body.password
         }
-        const payload = {
-            permissions: {}
-        };
-        const privateKey = keys.rsa_private[JWT_OPTIONS.KEYID].replace(/\\n/g, '\n');
+
+        // const payload = {
+        //     permissions: {}
+        // };
+        //const privateKey = keys.rsa_private[JWT_OPTIONS.KEYID].replace(/\\n/g, '\n');
+        const privateKey = this.lib.helpers.getPrivateKey();
 
         // saving new user to database
         let newUser = await this.lib.db.model('User')(userObj);
@@ -138,9 +144,9 @@ class Users extends BaseController {
         // is to allow them into the app with limited permissions
         // This is applicable to all types of users in the database
 
-        const token = await user.generateAuthToken(privateKey, signOptions, payload);
+        const authToken = await user.generateToken(privateKey, signOptions);
         await user.addRoles(user._id, roles);
-        return { token: token, user: user._id };
+        return { token: authToken, user: user._id };
     }
 
     async sendWelcomePack(data){
