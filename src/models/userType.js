@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const helpers = require('../../lib/helpers');
+const helpers = require('../lib/helpers');
 
 module.exports = function(db){
-    let schema = require("../../schemas/tenant-entities/prize-type");  
+    let schema = require("../schemas/userType");  
     let modelDef = db.getModelFromSchema(schema)
 
-    modelDef.schema.plugin(require('../plugins/diffPlugin'));
+    modelDef.schema.plugin(require('./plugins/diffPlugin'));
 
     modelDef.schema.methods.toHAL = function(){    
         let json = JSON.stringify(this) //toJSON()                

@@ -13,5 +13,6 @@ module.exports = {
     Uploads: require('./uploads'),
     Authentication: require('./authentication'),
     ScheduledEmail: require('./messages'),
-    Tenants: require('./tenants')
+    Tenants: require('./tenants'),
+    Countries: require('./countries')
 }

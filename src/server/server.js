@@ -66,6 +66,7 @@ class Server {
             console.log(audience);
             if(!audience)
             throw new ErrorHandler('The domain is not set');
+            
             const domainRegex = RegExp('^((localhost)|((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,253})$')
 
             if (!domainRegex.test(audience))
@@ -78,7 +79,7 @@ class Server {
                     lib.db.modelPath('../models/core-config')
                 });
             }
-            const tenant = lib.db.model('Talent').findOne({domain_name: audience && isActive }).cache()
+            const tenant = lib.db.model('Tenant').findOne({domain_name: audience && isActive }).cache()
             if(!tenant)
                 throw new ErrorHandler('The domain is not valid')
             this.tenantConfig = tenant;

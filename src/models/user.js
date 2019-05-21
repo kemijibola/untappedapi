@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const jsonSelect  = require('mongoose-json-select');
-const helpers = require("../../lib/helpers");
+const helpers = require("../lib/helpers");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
-const config = require('config');
 
 module.exports = function(db){
-    let schema = require('../../schemas/core-config/user');
+    let schema = require('../schemas/user');
     let modelDef = db.getModelFromSchema(schema);
 
     modelDef.schema.plugin(jsonSelect, '-roles');

@@ -2,28 +2,22 @@ const _ = require('underscore');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 // const settings = require('../config/settings');
-let modelStr;
+
 let obj = {
     getModelFromSchema: getModelFromSchema,
-    modelInUse: modelPath,
     model: function(mName){
         return this.models[mName];
     },
     connect: function(settings, callback){
-        // mongoose.connect(process.env['database_host'] + "/" +process.env['database_name']);
-        mongoose.connect(settings.database_host + "/" +settings.database_name);
+        mongoose.connect(settings.host + "/" +settings.name);
         this.connection = mongoose.connection;
+        console.log(this.connection);
         this.connection.on('error', callback);
         this.connection.on('open', callback);
     }
 }
 
-function modelPath(strPath){
-    return modelStr = strPath
-}
-
-obj.models = require('../models/core-config/')(obj);
-obj.models = require('../models/tenant-entities/')(obj);
+obj.models = require('../models/')(obj);
 
 module.exports = obj;
 

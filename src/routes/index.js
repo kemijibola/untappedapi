@@ -11,5 +11,7 @@ module.exports = (lib, app) => {
     require('./collections')(lib,app),
     require('./applications')(lib,app),
     require('./uploads')(lib,app),
-    require('./authentication')(lib,app)
+    require('./authentication')(lib,app),
+    require('./countries')(lib,app),
+    require('./tenants')(lib,app)
 }

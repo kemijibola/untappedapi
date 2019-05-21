@@ -10,6 +10,7 @@ module.exports = {
     "appointments": require('./appointments'),
     "uploads": require('./uploads'),
     "authentication": require('./authentication'),
-    "contests": require('./contests')
+    "contests": require('./contests'),
+    "tenants": require('./tenants')
     // "keys": require('./keys')
 }

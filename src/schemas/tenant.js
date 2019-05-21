@@ -1,5 +1,15 @@
 module.exports = {
     "id": "Tenant",
+    "definitions": {
+        "payment_channels": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "is_visible": { "type": "string" }
+          }
+        //   "required": ["street_address", "city", "state"]
+        }
+      }, 
     "properties": {
         "name": {
             "type": "string",
@@ -32,7 +42,7 @@ module.exports = {
             "description": "The user that approved tenant",
             "$ref": "User"
         },
-        "isActive": {
+        "is_active": {
             "type": "boolean",
             "description": "This is used to activate/deactivate tenant"
         },
@@ -41,36 +51,43 @@ module.exports = {
             "description": "The official address of the tenant"
         },
         "payment_channels": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "isVisible": {
-                        "type": "boolean"
-                    }
-                }
-            }
+            "type": "Schema.Types.Mixed",
+            "description": "The list of tenant's payment channel"
         },
         "application_settings": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    }
-                }
-            }
+            "type": "Schema.Types.Mixed",
+            "description": "The list of application settings"
         },
+        // "payment_channels": {
+        //     "type": "array",
+        //     "items": {
+        //         "properties": {
+        //             "name": {
+        //                 "type": "string"
+        //             },
+        //             "is_visible": {
+        //                 "type": "boolean"
+        //             }
+        //         }
+        //     }
+        // },
+        // "application_settings": {
+        //     "type": "array",
+        //     "items": {
+        //         "type": "object",
+        //         "properties": {
+        //             "key": {
+        //                 "type": "string"
+        //             },
+        //             "value": {
+        //                 "type": "string"
+        //             },
+        //             "description": {
+        //                 "type": "string"
+        //             }
+        //         }
+        //     }
+        // },
         "date_created": {
             "type": "date",
             "description": "The date tenant was created"

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const helpers = require('../../lib/helpers');
+const helpers = require('../lib/helpers');
 
 module.exports = function(db){
-    let schema = require("../../schemas/core-config/scheduled-email");  
+    let schema = require("../schemas/role");  
     let modelDef = db.getModelFromSchema(schema);
 
     modelDef.schema.plugin(require('./plugins/diffPlugin'));
