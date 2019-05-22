@@ -19,7 +19,7 @@ module.exports = function(db){
         "Tenant": require('./tenant')(db),
         "User": require('./user')(db),
         "UserType": require('./userType')(db),
-        "Gig": require('./gig')(db),
+        "Gig": require('./gig')(db)
         "Country": require('./country')(db)
     }
 }

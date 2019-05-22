@@ -1,7 +1,6 @@
 const _ = require('underscore');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// const settings = require('../config/settings');
 
 let obj = {
     getModelFromSchema: getModelFromSchema,
@@ -11,13 +10,15 @@ let obj = {
     connect: function(settings, callback){
         mongoose.connect(settings.host + "/" +settings.name);
         this.connection = mongoose.connection;
-        console.log(this.connection);
         this.connection.on('error', callback);
         this.connection.on('open', callback);
+    },
+    disconnect: function(){
+        this.connection.close();
     }
 }
 
-obj.models = require('../models/')(obj);
+obj.models = require('../models/')
 
 module.exports = obj;
 

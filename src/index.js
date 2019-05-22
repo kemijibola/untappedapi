@@ -4,9 +4,9 @@ const settings = require('./config/settings');
 var AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
 var s3 = new AWS.S3();
-const core = require('./server/core');
+const server = require('./server/server');
 
-core({
+server({
     app,
     port: settings.port
 })

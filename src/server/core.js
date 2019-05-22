@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 require('../services/cache');
 const settings = require('../config/settings');
 const cache = require('../services/tenant-config.cache');
+const mediator = require('../lib/event-emitter');
 
 module.exports = (options) => {
     if(!options.app){
@@ -36,17 +37,11 @@ module.exports = (options) => {
 
     require('../routes')(lib, app);
 
+    // This is used to fetch / set the configuration of the tenant making request
     app.use(async (req, res, next) => {
-        let dbSettings = {
-            host: settings.database_host,
-            name: settings.database_name
-        };
-        // for each request, check the audience
-        // check if key(audience) exist in cache
-        // if it does, call next()
-        // otherwise, fetch audience config
-        // save in cache 
-        // call next()
+        console.log('core')
+        // default database settings for core
+        let dbSettings = {};
         const audience = req.body.audience;
         if(!audience) {
             lib.logger.error('The domain is not set')
@@ -56,8 +51,9 @@ module.exports = (options) => {
             const key = `tenantConfig:${audience}`
             const cachedValue = await cache.getCachedData(key);
             if (cachedValue) {
-                // set db configurations from cached Value
                 const parseCachedValue = JSON.parse(cachedValue);
+                console.log(parseCachedValue)
+                // Setting db settings for tenant from cachedValue
                 dbSettings = {
                     host: parseCachedValue.database_host,
                     name: parseCachedValue.database_name
@@ -68,9 +64,16 @@ module.exports = (options) => {
                 })
                 return next();
             }
+
+            // Setting core db settings
+            dbSettings = {
+                host: settings.database_host,
+                name: settings.database_name
+            };
             lib.db.connect(dbSettings, err => {
                 if(err) lib.logger.error(`Error trying to connect to database: ${err}`)
                 lib.logger.info('Database service successfully started')
+                //mediator.emit('on.core')
             })
             const tenant = await lib.db.model('Tenant').findOne({domain_name: audience }).cache(audience)
             if(!tenant)
@@ -83,5 +86,11 @@ module.exports = (options) => {
 
     app.listen(port, () => {
         lib.logger.info(`Server started successfully on ${port}`);
+    });
+
+
+    app.on('close', () => {
+        // close all db connections on this event
+        lib.db.disconnect();
     });
 }
