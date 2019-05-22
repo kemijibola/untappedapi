@@ -7,7 +7,7 @@ class Countries extends BaseController {
     }
 
     async index(req, res, next) {
-        const countries = await this.lib.db.model('Country').find();
+        const countries = await this.lib.db.model('Country').find({});
         const halObj = this.writeHAL(countries);
         return this.transformResponse(res, true, halObj, 'Fetch operation successful');
     }

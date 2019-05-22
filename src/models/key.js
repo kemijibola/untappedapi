@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
-const helpers = require('../../lib/helpers');
+const helpers = require('../lib/helpers');
 const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 
 module.exports = function(db){
-    let schema = require("../../schemas/key");  
+    let schema = require("../schemas/key");  
     let modelDef = db.getModelFromSchema(schema);
 
-    modelDef.schema.plugin(require('../plugins/diffPlugin'));
+    modelDef.schema.plugin(require('./plugins/diffPlugin'));
 
     modelDef.schema.plugin(autoIncrement.plugin, 
         { 

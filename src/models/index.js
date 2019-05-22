@@ -6,12 +6,12 @@ module.exports = function(db){
         "Professional": require('./professional')(db),
         "Gig": require('./gig')(db),
         "PrizeType": require('./prize-type')(db),
-        "Collection": require('./collection')(db),
-        "Comment": require('./comment')(db),
-        "Contest": require('./contest')(db),
-        "Talent": require('./talent')(db),
+        // "Collection": require('./collection')(db),
+        // "Comment": require('./comment')(db),
+        // "Contest": require('./contest')(db),
+        // "Talent": require('./talent')(db),
         "Permission": require('./permission')(db),
-        "Professional": require('./professional')(db),
+        // "Professional": require('./professional')(db),
         "Resource": require('./resource')(db),
         "RolePermission": require('./role-permission')(db),
         "Role": require('./role')(db),
@@ -19,7 +19,7 @@ module.exports = function(db){
         "Tenant": require('./tenant')(db),
         "User": require('./user')(db),
         "UserType": require('./userType')(db),
-        "Gig": require('./gig')(db),
+        // "Gig": require('./gig')(db),
         "Country": require('./country')(db)
     }
 }

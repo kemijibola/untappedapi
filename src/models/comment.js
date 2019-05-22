@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const helpers = require('../../lib/helpers');
+const helpers = require('../lib/helpers');
 
 module.exports = function(db){
-    let schema = require("../../schemas/comment");  
+    let schema = require("../schemas/comment");  
     let modelDef = db.getModelFromSchema(schema);
 
     modelDef.schema.methods.toHAL = function(){                

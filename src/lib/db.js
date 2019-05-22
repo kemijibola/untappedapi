@@ -18,7 +18,7 @@ let obj = {
     }
 }
 
-obj.models = require('../models/')
+obj.models = require('../models/')(obj)
 
 module.exports = obj;
 
