@@ -31,8 +31,11 @@ Queue.process("send-instant", async function(job, done) {
             }
             // send mail object to mailer
             const mail = await mailer.send(mailData)
+            
+            // update schedule-email properties
             updateSchedule = {
                 is_sent: mail.isSent,
+                sent_date: new Date(),
                 error_message: mail.errorMessage
             };
             scheduleModel = Object.assign(scheduleModel, updateSchedule);
