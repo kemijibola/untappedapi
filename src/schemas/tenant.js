@@ -1,15 +1,5 @@
 module.exports = {
     "id": "Tenant",
-    "definitions": {
-        "payment_channels": {
-          "type": "object",
-          "properties": {
-            "name": { "type": "string" },
-            "is_visible": { "type": "string" }
-          }
-        //   "required": ["street_address", "city", "state"]
-        }
-      }, 
     "properties": {
         "name": {
             "type": "string",

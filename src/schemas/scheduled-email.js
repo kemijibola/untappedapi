@@ -1,15 +1,6 @@
 module.exports = {
     "id": "ScheduledEmail",
     "properties": {
-        "tenant": {
-            "type": "object",
-            "description": "The tenant being configured",
-            "$ref": "Tenant"
-        },
-        "jobId": {
-            "type": "string",
-            "description": "The id associated with the job in the queue scheduler"
-        },
         "mail_type": {
             "type": "string",
             "description": "This is the type of email. Transactional or Marketing mail"

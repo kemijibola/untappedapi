@@ -27,11 +27,10 @@ const UNTAPPED_USER_TYPES = {
     PROFESSIONAL: 'PROFESSIONAL'
 }
 
-// const JWT_OPTIONS = {
-//     ISSUER: 'http://127.0.0.1:9000',
-//     EXPIRESIN: '12h',
-//     CURRENTKEY: '42'
-// }
+const MAIL_TYPES = {
+    TRANSACTIONAL: 'TRANSACTIONAL',
+    MARKETTING: 'MARKETTING'
+}
 
 const COLLECTION_UPLOAD_TYPE = {
     SINGLE: 'SINGLE',
@@ -45,7 +44,7 @@ const ACCEPTED_MEDIA_TYPES = {
     MP3: 'AUDIOS'
 }
 const JWT_OPTIONS = {
-    ISSUER: 'http://untappedpool.com',
+    ISSUER: 'api.untappedpool.com',
     EXPIRESIN: '12h',
     ALG: keys.rsa_type,
     KEYID: keys.rsa_kid
@@ -68,7 +67,8 @@ const TOKEN_TYPES = {
 
 const TEMPLATE_LINKS = {
     TWITTER: 'http://twitter.com/untappedpool',
-    FACEBOOK: 'http://facebook.com/untappedpool'
+    FACEBOOK: 'http://facebook.com/untappedpool',
+    PLATFORMURL: 'https://untappedpool.com/'
 }
 
 module.exports = Object.assign({}, { 
@@ -80,5 +80,6 @@ module.exports = Object.assign({}, {
     ROLE_TYPES, 
     UPLOAD_OPERATION_TYPE,
     TOKEN_TYPES,
-    TEMPLATE_LINKS
+    TEMPLATE_LINKS,
+    MAIL_TYPES
  })

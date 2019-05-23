@@ -3,7 +3,7 @@ const ErrorHandler = require('../lib/errorHandler');
 const lib = require('../lib');
 const bodyParser = require('body-parser');
 require('../services/cache');
-const keys = require('../config/settings')
+const keys = require('../config/settings');
 
 module.exports = (options) => {
     if(!options.app){

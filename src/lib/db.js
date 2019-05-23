@@ -8,10 +8,10 @@ let obj = {
         return this.models[mName];
     },
     connect: function(settings, callback){
-        mongoose.connect(settings.host + "/" +settings.name);
-        this.connection = mongoose.connection;
-        this.connection.on('error', callback);
-        this.connection.on('open', callback);
+        mongoose.connect(settings.host + "/" +settings.name)
+        this.connection = mongoose.connection
+        this.connection.on('error', callback)
+        this.connection.on('open', callback)
     },
     disconnect: function(){
         this.connection.close();

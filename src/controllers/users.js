@@ -1,14 +1,19 @@
 const BaseController = require('./baseController');
-const { JWT_OPTIONS, ROLE_TYPES, TOKEN_TYPES } = require('../lib/constants');
+const { JWT_OPTIONS, ROLE_TYPES, TOKEN_TYPES, TEMPLATE_LINKS, MAIL_TYPES } = require('../lib/constants');
 const ApiResponse = require('../models/response');
 const { authorizationService, emailService } = require('../services/index');
 const { sendMail } = require('../lib/helpers');
 const { SignInOptions } = require('../models/custom/token-options');
+const ScheduledEmail = require('../models/custom/scheduled-email');
 // const config = require('config');
 let keys = require('../config/settings');
 // var AWS = require('aws-sdk');
 // AWS.config.region = 'us-east-2b';
 // var s3 = new AWS.S3();
+const kue = require('../lib/kue');
+require('../lib/worker');
+const welcomeEmail = require('../lib/email-templates/welcome-email');
+const { commonTemplatePlaceholder } = require('../lib/email-helper');
 class Users extends BaseController {
     constructor(lib){
         super();
@@ -79,13 +84,60 @@ class Users extends BaseController {
                     { role_type: ROLE_TYPES.FREE }
                 ]
                 const roles = await this.lib.db.model('Role').find(criteria);
-                
-                const newUser = await this.createUser(roles, body);
-                newUser.user_type = userTypeModel.name;
-                // TODO:: before sending back response to client,
-                // send welcome pack email based on type of user
+                const userObj = {
+                    name: body.name,
+                    email: body.email,
+                    password: body.password
+                }
+                // saving new user to database
+                let newUser = await this.lib.db.model('User')(userObj);
+                const user = await newUser.save();
 
-                const halObj = this.writeHAL(newUser);
+                // assign roles to created user
+                await user.addRoles(newUser._id, roles);
+                const templateString = welcomeEmail.template;
+                // generate verification token
+                const signOptions = {
+                    issuer: JWT_OPTIONS.ISSUER,
+                    audience: body.audience,
+                    expiresIn: '2hr',
+                    algorithm: keys.rsa_type,
+                    keyid: keys.rsa_kid
+                };
+                const payload = {
+                    type: TOKEN_TYPES.MAIL
+                }
+                const privateKey = this.lib.helpers.getPrivateKey();
+                const verificationToken = await user.generateToken(privateKey, signOptions, payload)
+                let emailBody = templateString
+                        .replace('[Name]', newUser.name)
+                        .replace('[VerificationUrl]', `${TEMPLATE_LINKS.PLATFORMURL}/verification?token=${verificationToken}`);
+
+                emailBody = commonTemplatePlaceholder(emailBody)
+                
+                const schedule = {
+                    mail_type:  MAIL_TYPES.TRANSACTIONAL,
+                    subject: 'Signup Welcome Email',
+                    body: emailBody,
+                    receiver_email: newUser.email,
+                    sender_email: 'welcome@untappedpool.com',
+                    date_created: new Date(),
+                    scheduled_date: new Date(),
+                    ready_to_send: true
+                }
+               const newSchedule = await this.createSchedule(schedule);
+                if (newSchedule) {
+                    let args = {
+                        jobName: 'send-instant',
+                        time: newSchedule.date_created,
+                        params: {
+                            scheduleId: newSchedule._id
+                        }
+                    }
+
+                    kue.scheduleInstantJob(args);
+                } 
+                const halObj = this.writeHAL({signup: true});
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
                 next(res, this.transformResponse(res,false, 'InternalServerError', err.message))
@@ -95,64 +147,16 @@ class Users extends BaseController {
         }
     }
 
-    async emailExist(req, res, next){
-        let body = req.body
-        if (body){
-            try {
-                const email = body.email.trim().toLowerCase();
-                const found = await this.lib.model('User').findOne({ email: email });
-                if(found)
-                this.writeHAL(res, email);
+    async createSchedule(data){
+        if (data) {
+            try{
+                const newSchedule = await this.lib.db.model('ScheduledEmail')(data)
+                return newSchedule.save();
             }catch(err){
-                next(this.Error('InternalServerError', err));
+                // log error to db
             }
-        }else {
-            next(this.Error('InvalidContent', 'Missing json data'));
         }
-    }
-
-    async createUser(roles, body){
-        
-        const signOptions = new SignInOptions(
-            {
-                issuer: JWT_OPTIONS.ISSUER,
-                subject: '',
-                type: TOKEN_TYPES.AUTH,
-                audience: body.audience,
-                expiresIn: JWT_OPTIONS.EXPIRESIN,
-                algorithm: keys.rsa_type,
-                keyid: keys.rsa_kid
-            }
-        );
-        const userObj = {
-            name: body.name,
-            email: body.email,
-            password: body.password
-        }
-
-        // const payload = {
-        //     permissions: {}
-        // };
-        //const privateKey = keys.rsa_private[JWT_OPTIONS.KEYID].replace(/\\n/g, '\n');
-        const privateKey = this.lib.helpers.getPrivateKey();
-
-        // saving new user to database
-        let newUser = await this.lib.db.model('User')(userObj);
-        const user = await newUser.save();
-        
-        // The user has not yet verified email, sending them a token with empty scopes
-        // is to allow them into the app with limited permissions
-        // This is applicable to all types of users in the database
-
-        const authToken = await user.generateToken(privateKey, signOptions);
-        await user.addRoles(user._id, roles);
-        return { token: authToken, user: user._id };
-    }
-
-    async sendWelcomePack(data){
-        // pass payload to email Service
-        sendMail(body)
-    }  
+    } 
 }
 
 module.exports = Users
