@@ -25,7 +25,7 @@ module.exports = function(db){
     modelDef.schema.methods.addRoles = async function(id, roles){
         const user =  await db.model('User').findById(id);
         user.roles.push(...roles);
-        return user.save();
+        return await user.save();
     }
 
     modelDef.schema.pre('save', function save(next){

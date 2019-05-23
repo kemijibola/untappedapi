@@ -93,10 +93,12 @@ class Users extends BaseController {
                 let newUser = await this.lib.db.model('User')(userObj);
                 const user = await newUser.save();
 
-                // assign roles to created user
+                // saving assigned roles to created user to database
                 await user.addRoles(newUser._id, roles);
+
+                // Send welcome mail to created user
                 const templateString = welcomeEmail.template;
-                // generate verification token
+                //token sign options
                 const signOptions = {
                     issuer: JWT_OPTIONS.ISSUER,
                     audience: body.audience,
@@ -104,17 +106,26 @@ class Users extends BaseController {
                     algorithm: keys.rsa_type,
                     keyid: keys.rsa_kid
                 };
+
+                // this is used to verify what type of token was generated. We use MAIL type
+                // to signify the token is generated for mail verification and not authentication
+
                 const payload = {
                     type: TOKEN_TYPES.MAIL
                 }
                 const privateKey = this.lib.helpers.getPrivateKey();
+
+                // generate verification token
                 const verificationToken = await user.generateToken(privateKey, signOptions, payload)
+
+                // replace static text in template string with dynamic variables
                 let emailBody = templateString
                         .replace('[Name]', newUser.name)
                         .replace('[VerificationUrl]', `${TEMPLATE_LINKS.PLATFORMURL}/verification?token=${verificationToken}`);
 
                 emailBody = commonTemplatePlaceholder(emailBody)
-                
+
+                // create schedule job for sending mail
                 const schedule = {
                     mail_type:  MAIL_TYPES.TRANSACTIONAL,
                     subject: 'Signup Welcome Email',
@@ -122,7 +133,7 @@ class Users extends BaseController {
                     receiver_email: newUser.email,
                     sender_email: 'welcome@untappedpool.com',
                     date_created: new Date(),
-                    scheduled_date: new Date(),
+                    schedule_date: new Date(),
                     ready_to_send: true
                 }
                const newSchedule = await this.createSchedule(schedule);
@@ -134,7 +145,7 @@ class Users extends BaseController {
                             scheduleId: newSchedule._id
                         }
                     }
-
+                    // add schedule job to queue for processing 
                     kue.scheduleInstantJob(args);
                 } 
                 const halObj = this.writeHAL({signup: true});
@@ -150,6 +161,8 @@ class Users extends BaseController {
     async createSchedule(data){
         if (data) {
             try{
+                data.is_sent = false;
+                data.is_picked_for_sending = false;
                 const newSchedule = await this.lib.db.model('ScheduledEmail')(data)
                 return newSchedule.save();
             }catch(err){

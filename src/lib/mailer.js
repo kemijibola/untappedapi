@@ -16,6 +16,7 @@ let send = async args => {
     const accessToken = tokens.credentials.access_token
 
     let transporter = nodemailer;
+    let mailStatus = { isSent: false, errorMessage: '' };
     try {
         // create reusable transporter object using the default SMTP transport
             transporter = nodemailer.createTransport({
@@ -44,13 +45,14 @@ let send = async args => {
             subject: args.subject, // Subject line
             html: args.body // html body
         });
-        
-        console.log(info)
-        transporter.close()
+        transporter.close();
+        mailStatus.isSent = true;
+        return mailStatus;
 
     } catch (err) {
         transporter.close()
-        console.log(`Error: ${err}`);
+        mailStatus.errorMessage = err.message;
+        return mailStatus;
     }
 };
 
