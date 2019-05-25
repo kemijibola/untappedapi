@@ -40,8 +40,8 @@ async function validateToken(req, res, next) {
     }
     
     var verifyOptions = {
-        issuer: payload.iss,
-        subject: payload.sub,
+        issuer: JWT_OPTIONS.ISSUER,
+        subject: req.user._id,
         audience: payload.aud,
         expiresIn: JWT_OPTIONS.EXPIRESIN,
         algorithm:  ["RS256"]

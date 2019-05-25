@@ -5,5 +5,6 @@ module.exports = {
     logger: require('./logger'),
     schemas: require('../schemas/'),
     schemaValidator: require('./schemaValidator'),
-    db: require('./db')
+    db: require('./db'),
+    kue: require('./kue')
 }

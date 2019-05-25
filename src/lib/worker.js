@@ -16,7 +16,7 @@ Queue.process("send-instant", async function(job, done) {
             is_picked_for_sending: false
         });
         // send mail  
-        if (scheduleModel)  {
+        if (scheduleModel) {
             updateSchedule = {
                 is_picked_for_sending: true
             }
@@ -41,6 +41,7 @@ Queue.process("send-instant", async function(job, done) {
             };
             scheduleModel = Object.assign(scheduleModel, updateSchedule);
             await scheduleModel.save();
+            
             done();
         }
     }catch(err){

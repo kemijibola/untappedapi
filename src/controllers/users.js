@@ -10,10 +10,9 @@ let keys = require('../config/settings');
 // var AWS = require('aws-sdk');
 // AWS.config.region = 'us-east-2b';
 // var s3 = new AWS.S3();
-const kue = require('../lib/kue');
 require('../lib/worker');
 const welcomeEmail = require('../lib/email-templates/welcome-email');
-const { commonTemplatePlaceholder } = require('../lib/email-helper');
+
 class Users extends BaseController {
     constructor(lib){
         super();
@@ -102,7 +101,7 @@ class Users extends BaseController {
                 const signOptions = {
                     issuer: JWT_OPTIONS.ISSUER,
                     audience: body.audience,
-                    expiresIn: '2hr',
+                    expiresIn: keys.verification_expiresIn,
                     algorithm: keys.rsa_type,
                     keyid: keys.rsa_kid
                 };
@@ -123,7 +122,8 @@ class Users extends BaseController {
                         .replace('[Name]', newUser.name)
                         .replace('[VerificationUrl]', `${TEMPLATE_LINKS.PLATFORMURL}/verification?token=${verificationToken}`);
 
-                emailBody = commonTemplatePlaceholder(emailBody)
+                //emailBody = this.lib. commonTemplatePlaceholder(emailBody) 
+                emailBody = this.lib.helpers.templateCommonPlaceholder(emailBody);
 
                 // create schedule job for sending mail
                 const schedule = {
@@ -146,7 +146,8 @@ class Users extends BaseController {
                         }
                     }
                     // add schedule job to queue for processing 
-                    kue.scheduleInstantJob(args);
+                    //kue.scheduleInstantJob(args);
+                    this.lib.scheduleInstantJob(args)
                 } 
                 const halObj = this.writeHAL({signup: true});
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
@@ -170,6 +171,54 @@ class Users extends BaseController {
             }
         }
     } 
+
+    async emailConfirmation(req, res, next){
+        const token = req.query.token;
+        const audience = req.body.audience;
+        if(token && audience){
+            // extra verification the token consists of the three parts [header,payload,signature]
+            const parts = token.split('.');
+            if (parts.length !== 3){
+                return next(this.transformResponse(res, false, 'InvalidCredentials', 'Verification token is invalid.'))
+            }
+            // extra verification the token is signed with valid key id
+            // TODO: extend check to accomodate multiple keys, incase of future key rotation
+            const header = JSON.parse(Buffer.from(parts[0], 'base64'))
+            const payload = JSON.parse(Buffer.from(parts[1], 'base64'))
+
+            // this is to ensure the kid is valid
+            if(header.kid !== keys.verification_kid){
+                return next(this.transformResponse(res, false, 'InvalidCredentials', 'Verification token is invalid.'))
+            }
+            // this is to ensure the token is generated for mail verification
+            if (payload.type !== TOKEN_TYPES.MAIL){
+                return next(this.transformResponse(res, false, 'InvalidCredentials', 'Verification token is invalid.'))
+            }
+            // validate expiration 
+            // validate subject/user
+            var verifyOptions = {
+                issuer: JWT_OPTIONS.ISSUER,
+                subject: req.user._id,
+                audience: payload.aud,
+                expiresIn: keys.verification_expiresIn,
+                // change to RS128 algorithm for verification token
+                algorithm:  ["RS256"]
+            }
+            try {
+                await jwt.verify(token, keys.verification_publicKey, verifyOptions)
+                // all goes well, return success
+                const halObj = this.writeHAL({verification: true});
+                return this.transformResponse(res, true, halObj, 'Operation successful');
+
+            }catch(err){
+                next(res, this.transformResponse(res,false, 'InternalServerError', err.message))
+            }
+        }else {
+         next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));   
+        }
+
+    }
+
 }
 
 module.exports = Users

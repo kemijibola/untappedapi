@@ -1,6 +1,7 @@
 const keys = require('../config/settings');
 const halson = require('halson');
 const { JWT_OPTIONS, TEMPLATE_LINKS } = require('./constants');
+
 module.exports = {
     makeHAL: makeHAL,
     mergeLists: mergeLists,
