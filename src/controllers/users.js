@@ -65,7 +65,7 @@ class Users extends BaseController {
 
     async signup(req, res, next){
         const body = req.body;
-        if(body){
+        if(body.email && body.name && body.user_type && body.audience){
             try{
                 let criteria = {};
                 const email = body.email.trim().toLowerCase();

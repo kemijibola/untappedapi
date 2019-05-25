@@ -9,6 +9,7 @@ Queue.process("send-instant", async function(job, done) {
     let updateSchedule = {};
     try{
         // use id to fetch mail details
+        // TODO: This should send batch
         let scheduleModel = await lib.db.model('ScheduledEmail').findById({
             _id: data.scheduleId, is_sent: false,
             ready_to_send: true, schedule_date: { $lte: currentTime },
@@ -31,7 +32,7 @@ Queue.process("send-instant", async function(job, done) {
             }
             // send mail object to mailer
             const mail = await mailer.send(mailData)
-            
+
             // update schedule-email properties
             updateSchedule = {
                 is_sent: mail.isSent,
