@@ -4,6 +4,7 @@ const lib = require('../lib');
 const bodyParser = require('body-parser');
 require('../services/cache');
 const keys = require('../config/settings');
+const { handleError } = require('../middlewares/error.middleware');
 
 module.exports = (options) => {
     if(!options.app){
@@ -33,7 +34,11 @@ module.exports = (options) => {
         res.status(400).send(results);
     })
 
-    require('../routes')(lib, app);
+    require('../routes')(lib, app)
+
+    app.use(function(error, req, res, next) {
+        handleError(error, req, res, next);
+    });
 
     app.listen(port, () => {
         lib.logger.info(`Server started successfully on ${port}`);

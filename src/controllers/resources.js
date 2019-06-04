@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const BaseController = require('./baseController');
 class Resources extends BaseController {
     constructor(lib){

@@ -9,28 +9,6 @@ class BaseController {
     }
 
     transformResponse(res, status, data, message){
-        if (!status){
-            const error = new ErrorHandler(`Error of type ${data} found: ${ message}`);
-            if(ERROR_CODES[data]){
-                return res.status(ERROR_CODES[data]).json({
-                    status: status,
-                    error: {
-                        type: data,
-                        message: error.message
-                    },
-                    data: {}
-                })
-            }else {
-                return res.status(400).json({
-                    status: status,
-                    error: {
-                        type: data,
-                        message: error.message
-                    },
-                    data: {}
-                })
-            }
-        }
         return res.json({
             status: status,
             message: message,

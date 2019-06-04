@@ -1,28 +1,38 @@
+const ErrorHandler = require('./errorHandler');
+const mongoose = require('mongoose');
+
 module.exports = {
     tokenExchange: exchangeToken
 }
 
+let theMergedPermissions = {};
 // exchangeToken get the permission assigned to role for a particular resource
-// permissions are processed in place
 async function exchangeToken(lib, roles, destination){
-    destination = '/categories';
-    const url = await lib.db.model('Resource').findOne({name: destination})
+    // fetch all resource permissions by each role assigned to user
+    // merge all roles
 
-    let scopes = await roles.reduce(async (scopeMap, theRole, index) => {
-        scopeMap[theRole] = await lib.db.model('RolePermission')
-            .find({ role: theRole }, 'resourcePermission')
-            .populate(
-                {
-                    path: 'resourcePermission',
-                    match: { resource: url._id },
-                    select: 'permissions -_id'
-                }
-            )
-        return scopeMap
-    }, {})
+    try{
+        const resourceModel = await lib.db.model('Resource').findOne({name: destination})
+        for (let role of roles) {
+            const _roleId = mongoose.Types.ObjectId(role)
+            // get role-permission by role and resource
+            const rolePermissionModel = await lib.db.model('RolePermission')
+                .findOne({ role: _roleId, resource: resourceModel._id}, 'permissions')
+                .populate({ path: 'permissions' })
 
-    for (let key in scopes){
-        scopes[key] = scopes[key].filter(x => x.resourcePermission !== null)
+            await mergePermissions(rolePermissionModel.permissions);
+        }
+        return theMergedPermissions
+
+    }catch(err){
+        throw new ErrorHandler(err.message)
     }
-    return scopes;
+
+}
+async function mergePermissions(permissions){
+    for (let item of permissions) {
+        if(!theMergedPermissions[item['name']]) {
+            theMergedPermissions[item['name']] = item['name'];
+        }
+    }
 }

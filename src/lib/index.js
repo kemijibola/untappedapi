@@ -5,6 +5,7 @@ module.exports = {
     logger: require('./logger'),
     schemas: require('../schemas/'),
     schemaValidator: require('./schemaValidator'),
+    token: require('./exchange'),
     db: require('./db'),
     kue: require('./kue')
 }

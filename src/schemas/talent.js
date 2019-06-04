@@ -16,20 +16,13 @@ module.exports = {
             "type": "string",
             "description": "User's stage name"
         },
-        "full_name": {
-            "type": "string",
-            "description": "User's full name"
-        },
         "location": {
             "type": "string",
             "description": "User's location"
         },
-        "phone_numbers": {
-            "type": "array",
+        "phone_number": {
+            "type": "string",
             "description": "User's phone numbers",
-            "items": {
-                "type": "string"
-            }
         },
         "user": {
             "type": "object",
@@ -58,24 +51,9 @@ module.exports = {
             "type": "string",
             "description": "User profile picture",
         },
-        // "physical_stats": {
-        //     "description": "Users's physical attributes",
-        //     "$ref": "#definitions/physical_attributes"
-        // },
-        "experiences": {
-            "type": "array",
-            "description": "List of user's experience",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "activity_name": {
-                        "type": "string"
-                    },
-                    "more_info": {
-                        "type": "string"
-                    }
-                }
-            }
-        }
+        "physical_stats": {
+            "description": "Users's physical attributes",
+            "$ref": "#definitions/physical_attributes"
+        },
     }
 }

@@ -8,7 +8,7 @@ module.exports = {
         },
         "permissions": {
             "type": "array",
-            "description": "List of all permissions that can be performed by this this role",
+            "description": "List of all valid permissions that can be performed by this this role",
             "items": {
                 "$ref": "Permission"
             }

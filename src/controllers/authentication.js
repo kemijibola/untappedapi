@@ -1,10 +1,7 @@
-// login
-// token exchange
-// logout
 const BaseController = require('./baseController');
 const keys = require('../config/settings')
-const { JWT_OPTIONS } = require('../lib/constants')
-const { tokenExchange } = require('../lib/exchange');
+const { JWT_OPTIONS, TOKEN_TYPES } = require('../lib/constants')
+const UserNotFoundError = require('../lib/errors/user');
 
 class Authentication extends BaseController {
     constructor(lib){
@@ -13,52 +10,41 @@ class Authentication extends BaseController {
     }
 
     async login(req, res, next){
-
-        /* In login implementation, use audience and user roles to send back scopes(permissions) of the user
-        **   For example: ClientApp1 is an audience, send back roles needed for clientApp1
+        /* In login implementation, use requested route to send back permissions of the user
+        ** permission assigned to role for a particular resource
+        **   For example: talents is a resource, send back permissions needed for only talents 
         */ 
         let body = req.body;
         if (body){
             try{
-                if (!body.email || !body.password) { next(this.transformResponse(res, false, 'InvalidContent', 'Provide email and password.')); }
+                // if (body.audience === undefined) {
+                //     console.log('audience')
+                // }
+                if (body.email === undefined || body.password === undefined || body.audience === undefined) {
+                    return next(this.transformResponse(res, false, 'InvalidContent', 'Provide email, password and audience')); 
+                }
                 const user = await this.lib.db.model('User').findOne({email: body.email.toLowerCase()})
-                if (!user) { next(this.transformResponse(res, false, 'InvalidCredentials', 'Invalid credentials.')) }
-                user.comparePassword(body.password, async (err,isMatch) => {
-                    
-                    if(err) {
-                        next(this.transformResponse(res, false,'InvalidCredentials', 'Invalid credentials'))}
-                    if(isMatch){
-                        // TODO: Do a check to confirm the audience sent by a client is a valid audience 
-                        // that can access resource
-
-                        // get scopes by user role of user
-                        // const permissions = await getRolePermissions(user.roles);
-                        const permissions = await tokenExchange(this.lib, user.roles, req.originalUrl)
-                        
-                        const signOptions = {
-                            issuer: `${JWT_OPTIONS.ISSUER}${req.originalUrl}`,
-                            audience: '1234',
-                            keyid: JWT_OPTIONS.KEYID,
-                            algorithm: JWT_OPTIONS.ALG
-                        }
-                        const payload = {
-                            permissions: permissions
-                        }
-                        const privateKey = keys.rsa_private[JWT_OPTIONS.KEYID].replace(/\\n/g, '\n');
-                        const token = await user.generateAuthToken(privateKey, signOptions, payload);
-
-                        // send back token
-                        const halObj = this.writeHAL(token)
-                        return this.transformResponse(res, true, halObj, 'Login successful')
-                    }else {
-                        
-                        if (!user) { next(this.transformResponse(res, false, 'InvalidCredentials', 'Invalid credentials.')) }
-                    }});
+                if (!user) { 
+                    // throw new UserNotFoundError(body.email)
+                    return next(new UserNotFoundError(`${body.email} is not a valid user`))
+                    //return next(this.transformResponse(res, false, 'EntityNotFound', 'Invalid user')) 
+                }
+                user.comparePassword(body.password, (err, isMatch) => {
+                    console.log(err);
+                    if (err) { 
+                        return done(err);
+                     }
+                    if (isMatch) {
+                      return done(null, user);
+                    }
+                    return done(null, false, 'Invalid credentials.');
+                });
             }catch(err){
-                console.log(err)
+                //console.log(err)
+                return next(this.transformResponse(res, false, 'InternalServerError', err.message))
             }
         }else{
-            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data'))
+            return next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data'))
         }
     }
     async logout(){

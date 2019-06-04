@@ -56,6 +56,10 @@ module.exports = {
                 "type": "mixed"
             }
         },
+        "user_type": {
+            "type": "string",
+            "description": "Type of user"
+        },
         "roles": {
             "type": "array",
             "description": "List of user roles",

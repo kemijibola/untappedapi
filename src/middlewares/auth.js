@@ -39,12 +39,14 @@ async function validateToken(req, res, next) {
         return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
     
+    // the verify options should be from the token that was sent by the user
+    // look into that
     var verifyOptions = {
-        issuer: JWT_OPTIONS.ISSUER,
+        issuer: payload.issuer,
         subject: req.user._id,
         audience: payload.aud,
-        expiresIn: JWT_OPTIONS.EXPIRESIN,
-        algorithm:  ["RS256"]
+        expiresIn: payload.expiresIn,
+        algorithm:  payload.algorithm
     }
     try{
         const decoded = await jwt.verify(encodedJWT, keys.rsa_public_key, verifyOptions)

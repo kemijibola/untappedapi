@@ -7,11 +7,12 @@ module.exports = {
                "role": {
                     "type": 'string'
                 },
-                "resource_permission": {
-                    "type": 'string'
-                }
+                "permissions": {
+                    "type": 'array'
+                },
+                "resource": "string"
             },
-            "required": ['role', 'resource_permission']
+            "required": ['role', 'permissions', 'resource']
         }
     },
     "PUT": {

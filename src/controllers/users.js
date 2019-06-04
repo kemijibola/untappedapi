@@ -44,7 +44,6 @@ class Users extends BaseController {
             let isMongoId = new RegExp("^[0-9a-fA-F]{24}$");
             if(isMongoId.test(query)){
                 id = query
-                console.log(id)
             }
             criteria.$or = [
                 { _id: id },
@@ -86,7 +85,8 @@ class Users extends BaseController {
                 const userObj = {
                     name: body.name,
                     email: body.email,
-                    password: body.password
+                    password: body.password,
+                    user_type: userTypeModel.name
                 }
                 // saving new user to database
                 let newUser = await this.lib.db.model('User')(userObj);
@@ -105,7 +105,6 @@ class Users extends BaseController {
                     algorithm: keys.rsa_type,
                     keyid: keys.rsa_kid
                 };
-
                 // this is used to verify what type of token was generated. We use MAIL type
                 // to signify the token is generated for mail verification and not authentication
 

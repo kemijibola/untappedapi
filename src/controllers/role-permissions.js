@@ -22,10 +22,14 @@ class RolePermissions extends BaseController {
                     return acc
                 }, {})
                 body.permissions = [...Object.keys(permissions)];
-                // this is checking if the resource has been configured, if not, it creates the object ,otherwise,
+                // this is checking if the resource has been configured for this role, if not, it creates the object ,otherwise,
                 // it adds to the existing collection by merging existing permissions with incoming permissions
                 // and saves to database
-                let rolePermissionModel = await this.lib.db.model('RolePermission').findOne({resource: body.resource})
+                let rolePermissionModel = await this.lib.db.model('RolePermission')
+                    .findOne({
+                        resource: body.resource,
+                        role: body.role
+                    })
                 if (!rolePermissionModel){
                     rolePermissionModel = this.lib.db.model('RolePermission')(body);
                 }else {
