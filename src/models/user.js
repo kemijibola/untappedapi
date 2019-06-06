@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const jsonSelect  = require('mongoose-json-select');
 const helpers = require("../lib/helpers");
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcrypt');
 
 module.exports = function(db){
     let schema = require('../schemas/user');
@@ -33,7 +33,7 @@ module.exports = function(db){
         if (!user.isModified('password')) { return next(); }
         bcrypt.genSalt(10, (err, salt) => {
           if (err) { return next(err); }
-          bcrypt.hash(user.password, salt, null, (err, hash) => {
+          bcrypt.hash(user.password, salt, function (err, hash) {
             if (err) { return next(err); }
             user.password = hash;
             next();
@@ -47,10 +47,9 @@ module.exports = function(db){
         signOptions.subject = this._id.toString();
         return await jwt.sign(payload, privateKey, signOptions);
     }
-    modelDef.schema.methods.comparePassword = function comparePassword(candidatePassword, cb){
-        bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-        cb(err, isMatch);
-        });
+
+    modelDef.schema.methods.comparePassword = async function comparePassword(candidatePassword){
+        return await bcrypt.compare(candidatePassword, this.password);
     }
 
     return mongoose.model(modelDef.name, modelDef.schema)

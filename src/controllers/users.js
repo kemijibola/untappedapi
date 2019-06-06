@@ -1,10 +1,9 @@
 const BaseController = require('./baseController');
 const { JWT_OPTIONS, ROLE_TYPES, TOKEN_TYPES, TEMPLATE_LINKS, MAIL_TYPES } = require('../lib/constants');
-const ApiResponse = require('../models/response');
-const { authorizationService, emailService } = require('../services/index');
-const { sendMail } = require('../lib/helpers');
-const { SignInOptions } = require('../models/custom/token-options');
-const ScheduledEmail = require('../models/custom/scheduled-email');
+const { UserExists } = require('../lib/errors/user');
+const { UserTypeNotFoundError} = require('../lib/errors/user-type')
+const { InternalServerError } = require('../lib/errors/applicationError');
+const { RoleNotFoundError } = require('../lib/errors/role');
 // const config = require('config');
 let keys = require('../config/settings');
 // var AWS = require('aws-sdk');
@@ -63,25 +62,30 @@ class Users extends BaseController {
 
     async signup(req, res, next){
         const body = req.body;
-        if(body.email && body.name && body.user_type && body.audience){
+        if(body.email !== undefined || body.name !== undefined || body.user_type !== undefined || body.audience !== undefined){
             try{
                 let criteria = {};
                 const email = body.email.trim().toLowerCase();
                 // confirm the email does not already exist in the database
                 let userModel = await this.lib.db.model('User').findOne({email: email })
-                if(userModel) return next(this.transformResponse(res, false, 'DuplicateRecord', `There is a user registered with this email: ${ email }`))
-
+                if(userModel) {
+                    return next(new UserExists(`There is a user registered with this email: ${ email }`))
+                }
                 // This is checking that the user_type sent by client is a valid type of user 
                 // in the database. For Example: Talent,Audience,Professional
                 const userTypeModel = await this.lib.db.model('UserType').findById({ _id: body.user_type })
-                if(!userTypeModel) return next(this.transformResponse(res, false, 'ResourceNotFound', `Could not determine user type of: ${ body.user_type }`))
-                
+                if(!userTypeModel) {
+                    return next(new UserTypeNotFoundError(`Could not determine user type of: ${ body.user_type }`))
+                }
                 // We assign default role for all new user by user types
                 criteria.$and = [
                     { user_type: userTypeModel._id },
                     { role_type: ROLE_TYPES.FREE }
                 ]
                 const roles = await this.lib.db.model('Role').find(criteria);
+                if (!roles) {
+                    return next(new RoleNotFoundError(`Roles not defined for user type ${userTypeModel._id}`)) 
+                }
                 const userObj = {
                     name: body.name,
                     email: body.email,
@@ -105,6 +109,7 @@ class Users extends BaseController {
                     algorithm: keys.rsa_type,
                     keyid: keys.rsa_kid
                 };
+
                 // this is used to verify what type of token was generated. We use MAIL type
                 // to signify the token is generated for mail verification and not authentication
 
@@ -146,15 +151,15 @@ class Users extends BaseController {
                     }
                     // add schedule job to queue for processing 
                     //kue.scheduleInstantJob(args);
-                    this.lib.scheduleInstantJob(args)
+                    this.lib.kue.scheduleInstantJob(args)
                 } 
                 const halObj = this.writeHAL({signup: true});
                 return this.transformResponse(res, true, halObj, 'Create operation successful');
             }catch(err){
-                next(res, this.transformResponse(res,false, 'InternalServerError', err.message))
+                return next(new InternalServerError(`Internal Server Error. Please contact Untapped Pool's admin`))
             }
         }else {
-            next(this.transformResponse(res, false, 'InvalidContent', 'Missing json data.'));
+            return next(new UserInvalidContent('Provide valid json data. /name, email, password, user_type, audience/'))
         }
     }
 
@@ -165,6 +170,7 @@ class Users extends BaseController {
                 data.is_picked_for_sending = false;
                 const newSchedule = await this.lib.db.model('ScheduledEmail')(data)
                 return newSchedule.save();
+
             }catch(err){
                 // log error to db
             }

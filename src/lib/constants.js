@@ -45,7 +45,8 @@ const ACCEPTED_MEDIA_TYPES = {
 }
 const JWT_OPTIONS = {
     ISSUER: 'api.untappedpool.com',
-    EXPIRESIN: '12h',
+    AUTH_EXPIRESIN: '12h',
+    MAIL_EXPIRESIN: '2hr',
     ALG: keys.rsa_type,
     KEYID: keys.rsa_kid
 }

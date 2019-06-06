@@ -47,8 +47,12 @@ module.exports = (options) => {
             name: keys.database_name
         };
         lib.db.connect(dbSettings, err => {
-            if(err) lib.logger.error(`Error trying to connect to database: ${err}`);
-            lib.logger.info('Database service successfully started');
+            if(err) {
+                lib.logger.error(`Error trying to connect to database: ${err}`);
+            } else {
+                lib.logger.info('Database service successfully started');
+            }
+            
         })
     });
     

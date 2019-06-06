@@ -12,7 +12,9 @@ module.exports = {
         },
         "password": {
             "type": "string",
-            "description": "Password of user."
+            "description": "Password of user.",
+            // specifying length for bcrypt to avoid truncating created hash
+            "maxLength": 120
         },
         "email_confirmed": {
             "type": "boolean",

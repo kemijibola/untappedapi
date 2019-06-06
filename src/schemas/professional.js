@@ -10,9 +10,13 @@ module.exports = {
             "description": "User's full name",
             "$ref": "UserType"
         },
-        "location": {
+        "official_address": {
             "type": "string",
-            "description": "User's location"
+            "description": "User's official_address"
+        },
+        "rc_number": {
+            "type": "string",
+            "description": "Professional's corporate identity"
         },
         "phone_numbers": {
             "type": "array",

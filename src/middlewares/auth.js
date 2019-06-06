@@ -1,4 +1,4 @@
-const { JWT_OPTIONS } = require('../lib/constants');
+const { JWT_OPTIONS, TOKEN_TYPES } = require('../lib/constants');
 const jwt = require('jsonwebtoken');
 const BaseController = require('../controllers/baseController');
 const baseController = new BaseController();
@@ -38,15 +38,20 @@ async function validateToken(req, res, next) {
     if(header.kid !== keys.rsa_kid){
         return next(baseController.transformResponse(res, false, 'InvalidCredentials', 'Token is invalid.'))
     }
-    
+
+    // verify the token was generated for authentication only
+    if (payload.type !== TOKEN_TYPES.AUTH) {
+        return next()
+    }
     // the verify options should be from the token that was sent by the user
     // look into that
+    // TYPE must be of auth
     var verifyOptions = {
-        issuer: payload.issuer,
-        subject: req.user._id,
-        audience: payload.aud,
-        expiresIn: payload.expiresIn,
-        algorithm:  payload.algorithm
+        issuer: JWT_OPTIONS.ISSUER, // app supplies issuer
+        subject: req.user._id,  // current logged in user
+        audience: req.body.audience, //client sends audience
+        expiresIn: JWT_OPTIONS.AUTH_EXPIRESIN, // app supplies expiresIn
+        algorithm:  payload.algorithm // ["RS256"]
     }
     try{
         const decoded = await jwt.verify(encodedJWT, keys.rsa_public_key, verifyOptions)

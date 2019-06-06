@@ -9,4 +9,13 @@ class ApplicationError extends Error {
     }
 }
 
-module.exports = ApplicationError
+class InternalServerError extends ApplicationError {
+    constructor(message) {
+        super(message || `Oops this is not you, It's us. Our engineers will fix it.` , 500)
+    }
+}
+
+module.exports =  {
+    ApplicationError: ApplicationError,
+    InternalServerError: InternalServerError
+}
