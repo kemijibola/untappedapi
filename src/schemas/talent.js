@@ -44,7 +44,7 @@ module.exports = {
             "type": "array",
             "description": "User's social media account",
             "items": {
-                "type": "string"
+                "type": "Schema.Types.Mixed"
             }
         },
         "profile_picture": {

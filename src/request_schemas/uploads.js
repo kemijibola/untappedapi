@@ -4,11 +4,14 @@ module.exports = {
         "schema": {
             "type": "object",
             "properties": {
-               "medias": {
+               "action": {
+                   "type": 'string'
+               },
+               "files": {
                     "type": 'array'
                 }
             },
-            "required": ['medias']
+            "required": ['action','files']
         }
     }
 }

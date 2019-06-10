@@ -37,6 +37,12 @@ const COLLECTION_UPLOAD_TYPE = {
     MULTIPLE: 'MULTIPLE'
 }
 
+const UPLOAD_ACTION = {
+    UPLOAD_PROFILE_IMAGE: 'PROFILEIMAGE',
+    UPLOAD_PORTFOLIO: 'PORTFOLIO',
+    UPLOAD_GIG: 'GIGS'
+}
+
 const ACCEPTED_MEDIA_TYPES = {
     png: 'IMAGES',
     jpg: 'IMAGES',
@@ -82,5 +88,6 @@ module.exports = Object.assign({}, {
     UPLOAD_OPERATION_TYPE,
     TOKEN_TYPES,
     TEMPLATE_LINKS,
-    MAIL_TYPES
+    MAIL_TYPES,
+    UPLOAD_ACTION
  })

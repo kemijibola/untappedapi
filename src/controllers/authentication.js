@@ -23,15 +23,15 @@ class Authentication extends BaseController {
             if (body.email === undefined || body.password === undefined || body.audience === undefined) {
                 return next(new UserInvalidContent('Provide email, password and audience'))
             }
-            const user = await this.lib.db.model('User').findOne({email: body.email.toLowerCase()})
-            if (!user) { 
+            const userModel = await this.lib.db.model('User').findOne({email: body.email.toLowerCase()})
+            if (!userModel) { 
                 return next(new UserNotFoundError('Invalid user'))
             }
-            const isMatch = await user.comparePassword(body.password)
+            const isMatch = await userModel.comparePassword(body.password)
             if (isMatch) {
                 // get user permissons
                 const destinationUrl = req.url.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-                let permissions = await this.lib.token.tokenExchange(this.lib, user.roles, destinationUrl)
+                let permissions = await this.lib.token.tokenExchange(this.lib, userModel.roles, destinationUrl)
                 permissions = Object.keys(permissions)
                 const signOptions = {
                     issuer: JWT_OPTIONS.ISSUER,
@@ -45,11 +45,15 @@ class Authentication extends BaseController {
                 }
                 const privateKey = this.lib.helpers.getPrivateKey();
                 // generate token for request
-                const token = await user.generateToken(privateKey, signOptions, payload)
+                const token = await userModel.generateToken(privateKey, signOptions, payload)
                 const result = {
                     token,
                     permissions,
-                    user: user._id
+                    user: {
+                        _id: userModel._id,
+                        name: userModel.name,
+                        user_type: userModel.user_type
+                    }
                 };
                 const halObj = this.writeHAL(result)
                 return this.transformResponse(res, true, halObj, 'Login successful')
@@ -57,7 +61,7 @@ class Authentication extends BaseController {
                 return next(new InvalidCredentials('Invalid password'))
             }
         }catch(err){
-            //console.log(err)
+            console.log(err)
             return next(new InternalServerError(`Oops this is not you, It's us. Our engineers will fix it.`))
         }
     }

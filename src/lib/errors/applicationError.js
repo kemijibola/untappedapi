@@ -16,6 +16,6 @@ class InternalServerError extends ApplicationError {
 }
 
 module.exports =  {
-    ApplicationError: ApplicationError,
-    InternalServerError: InternalServerError
+    ApplicationError,
+    InternalServerError
 }
